@@ -11,7 +11,7 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: password
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - db_data:/var/lib/mysql
       - ../database/init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -32,7 +32,7 @@ services:
       - db
     volumes:
       - ../api:/usr/src/app
-      - /usr/src/app/node_modules
+      - api_node_modules:/usr/src/app/node_modules
 
   app:
     build:
@@ -45,7 +45,9 @@ services:
       - api
     volumes:
       - ../app:/usr/src/app
-      - /usr/src/app/node_modules
+      - app_node_modules:/usr/src/app/node_modules
 
 volumes:
   db_data:
+  app_node_modules:
+  api_node_modules:

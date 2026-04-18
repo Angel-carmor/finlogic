@@ -7,6 +7,10 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
+const authRoutes = require('./routes/auth.routes');
+
+app.use('/api/auth', authRoutes);
+
 app.get('/api', (req, res) => {
   res.json({ message: 'FinLogic API is running successfully' });
 });

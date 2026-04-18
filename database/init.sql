@@ -1,5 +1,24 @@
 CREATE DATABASE IF NOT EXISTS finlogic;
 USE finlogic;
 
--- Aquí irán tus tablas
--- CREATE TABLE users (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255));
+-- Tabla de usuarios (Auth)
+CREATE TABLE IF NOT EXISTS users (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Tabla de transacciones
+CREATE TABLE IF NOT EXISTS transactions (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  user_id INT NOT NULL,
+  type ENUM('income', 'expense') NOT NULL,
+  amount DECIMAL(10, 2) NOT NULL,
+  description VARCHAR(255),
+  category VARCHAR(100),
+  date DATE NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);

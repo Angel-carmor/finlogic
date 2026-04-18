@@ -1,14 +1,14 @@
 <template>
-  <div class="app-container">
-    <h1>FinLogic App</h1>
-    <p>Plataforma de planificación financiera lista</p>
-  </div>
+  <router-view></router-view>
 </template>
 
+<script setup>
+</script>
+
 <style>
-.app-container {
-  font-family: 'Inter', sans-serif;
-  text-align: center;
-  margin-top: 50px;
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: #f9f9f9;
 }
 </style>
