@@ -6,10 +6,10 @@ services:
     container_name: finlogic_db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpassword}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-TU_PASSWORD_ROOT}
       MYSQL_DATABASE: ${DB_NAME:-finlogic}
       MYSQL_USER: ${DB_USER:-user}
-      MYSQL_PASSWORD: ${DB_PASSWORD:-password}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-TU_PASSWORD_DB}
     ports:
       - "${DB_PORT_EXTERNAL:-3307}:3306"
     volumes:
@@ -26,10 +26,10 @@ services:
     environment:
       DB_HOST: ${DB_HOST:-db}
       DB_USER: ${DB_USER:-user}
-      DB_PASSWORD: ${DB_PASSWORD:-password}
+      DB_PASSWORD: ${DB_PASSWORD:-TU_PASSWORD_DB}
       DB_NAME: ${DB_NAME:-finlogic}
       PORT: ${PORT:-3000}
-      JWT_SECRET: ${JWT_SECRET:-super_secret_finlogic_key_123}
+      JWT_SECRET: ${JWT_SECRET:-TU_SECRET_JWT}
     depends_on:
       - db
     volumes:

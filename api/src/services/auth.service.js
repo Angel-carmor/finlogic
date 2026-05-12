@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const UserModel = require('../models/user.model');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_finlogic_key_123';
+const JWT_SECRET = process.env.JWT_SECRET || 'TU_SECRET_JWT';
 
 class AuthService {
   static async register(email, password) {

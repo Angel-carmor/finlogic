@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_finlogic_key_123';
+const JWT_SECRET = process.env.JWT_SECRET || 'TU_SECRET_JWT';
 
 const authMiddleware = (req, res, next) => {
   // 1. Obtener el header Authorization
