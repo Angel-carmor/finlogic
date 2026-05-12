@@ -1,11 +1,9 @@
-# 🌌 FinLogic
+#  FinLogic
 
-> 📝 **[DOCUMENTACIÓN OFICIAL DE ENTREGA (HITO)](file:///home/angel/Documentos/www/proyectos/finlogic/DOCUMENTACION_ENTREGA.md)** — Consulta aquí los **Criterios de éxito**, variables de entorno `.env` e inicialización de la base de datos MySQL requerida por la evaluación.
+>  **[DOCUMENTACIÓN OFICIAL DE ENTREGA (HITO)](file:///home/angel/Documentos/www/proyectos/finlogic/DOCUMENTACION_ENTREGA.md)** — Consulta aquí los **Criterios de éxito**, variables de entorno `.env` e inicialización de la base de datos MySQL requerida por la evaluación.
 
 > **Plataforma inteligente de planificación financiera personal en tiempo real.**  
 > Diseñada para organizar presupuestos mensuales mediante la regla estratégica **50/30/20**, simular rentabilidad por interés compuesto a largo plazo y automatizar el plan de pago de pasivos mediante el método de **Avalancha**.
-
----
 
 ## 🛠️ Stack Tecnológico
 
@@ -19,35 +17,6 @@
 
 ---
 
-## 🎯 Criterios de Éxito del Proyecto (Métricas del MVP)
-
-A continuación se detallan los **9 criterios de éxito clave y medibles** que guían el diseño, desarrollo e infraestructura del MVP de FinLogic. Se indica con precisión el estado de cumplimiento en este hito de entrega.
-
-### 📊 Tabla de Cumplimiento de Hitos
-
-| ID | Criterio de Éxito | Métrica / Evidencia de Validación | Estado |
-|---|---|---|:---:|
-| **1** | **Autenticación Segura (JWT)** | Registro e inicio de sesión de usuarios con contraseñas encriptadas mediante `bcrypt` (unidireccional) y generación de JSON Web Tokens persistidos en `localStorage`. | **[x] Cumplido** |
-| **2** | **Onboarding Guiado** | Formulario modular de 4 pasos que recopila ingresos netos mensuales, gastos fijos, deudas totales, estabilidad laboral y fondo de emergencia, persistiendo el estado en base de datos. | **[x] Cumplido** |
-| **3** | **Distribución Presupuestaria** | Cálculo inmediato y automático en el Dashboard de las recomendaciones del presupuesto estratégico **50/30/20** (Necesidades, Deseos, Ahorro/Deuda) a partir del ingreso configurado. | **[x] Cumplido** |
-| **4** | **Gráfico Espejo en Tiempo Real** | Renderizado dinámico del gráfico de dona (*Mirror Chart*) en el Dashboard, comparando visualmente la distribución presupuestaria óptima vs. la real. | **[x] Cumplido** |
-| **5** | **Simulador de Interés Compuesto** | Panel interactivo que proyecta el patrimonio neto acumulable a 10, 20 o 30 años en base a aportes mensuales configurables y rentabilidad esperada. | **[x] Cumplido** |
-| **6** | **Gestión de Inversiones (CRUD)** | Operaciones CRUD completas para añadir, listar y eliminar activos financieros con cálculo dinámico en tiempo real de retornos ponderados y aportaciones recurrentes. | **[x] Cumplido** |
-| **7** | **Planificador de Deudas (Avalancha)** | Algoritmo interactivo para calcular y visualizar el plan óptimo de amortización de deudas aplicando la estrategia de **Avalancha** (priorizando intereses más altos). | **[x] Cumplido** |
-| **8** | **Optimización de API (Performance)** | Tiempo de respuesta promedio inferior a **150ms** en los endpoints principales de consulta de API ejecutados en red local de desarrollo. | **[x] Cumplido** |
-| **9** | **Despliegue Portable Unificado (Docker)** | Orquestación completa de servicios (App, API, MySQL) compilables e iniciables mediante un único comando, aislando dependencias locales. | **[x] Cumplido** |
-
----
-
-## ⚙️ Configuración del Entorno (`.env`)
-
-FinLogic utiliza un sistema flexible de carga de variables de entorno con **valores preconfigurados por defecto**. Esto permite que la plataforma funcione de inmediato sin configuraciones previas, pero otorga control total para modificar credenciales o puertos si es necesario.
-
-Para personalizar la configuración, crea un archivo `.env` en la raíz del proyecto copiando el archivo plantilla:
-
-```bash
-cp .env.example .env
-```
 
 ### 📋 Variables Disponibles
 
@@ -92,6 +61,17 @@ cp .env.example .env
 ```
 *(Si no creas el archivo, Docker Compose arrancará automáticamente con la configuración segura por defecto descrita en la sección anterior).*
 
+## ⚙️ Configuración del Entorno (`.env`)
+
+FinLogic utiliza un sistema flexible de carga de variables de entorno con **valores preconfigurados por defecto**. Esto permite que la plataforma funcione de inmediato sin configuraciones previas, pero otorga control total para modificar credenciales o puertos si es necesario.
+
+Para personalizar la configuración, crea un archivo `.env` en la raíz del proyecto copiando el archivo plantilla:
+
+```bash
+cp .env.example .env
+```
+
+
 ### Paso 3: Lanzar los Contenedores de Docker (Orden de ejecución automatizado)
 Inicia la orquestación de servicios en segundo plano:
 ```bash
@@ -126,7 +106,7 @@ volumes:
 
 ## 🗄️ Conexión y Gestión de Base de Datos Manual con DBeaver
 
-Si deseas visualizar, auditar o realizar una inicialización manual de las tablas utilizando el gestor gráfico **DBeaver**, sigue estos pasos detallados:
+Si deseas  un inicialización manual de las tablas utilizando el gestor gráfico **DBeaver**, sigue estos pasos detallados:
 
 ### ⚙️ Paso A: Configurar la Conexión en DBeaver
 1. Abre **DBeaver** en tu ordenador.
@@ -142,20 +122,7 @@ Si deseas visualizar, auditar o realizar una inicialización manual de las tabla
    - *Si el gestor te indica que faltan los controladores (drivers) de conexión de MySQL, haz clic en **Descargar (Download)***.
 6. Una vez que la prueba retorne un mensaje de éxito con un check verde, haz clic en **Finalizar (Finish)**.
 
-### ✍️ Paso B: Inicialización y Carga de Tablas Manual
-Si alguna vez necesitas reinstanciar la base de datos manualmente o estás conectando el backend a una base de datos externa administrada en la nube (como **Aiven.io** o **Clever Cloud**):
-1. Haz clic derecho sobre tu conexión en DBeaver y selecciona **Editor SQL** -> **Nuevo editor SQL**.
-2. Abre el archivo de estructura [init.sql](file:///home/angel/Documentos/www/proyectos/finlogic/database/init.sql) de tu proyecto.
-3. Copia todo el contenido del archivo y pégalo en el editor SQL de DBeaver.
-4. ⚠️ **Nota Importante para Bases de Datos de Terceros (como Aiven.io):** Borra las primeras dos líneas del código pegado para evitar conflictos de privilegios:
-   ```sql
-   CREATE DATABASE IF NOT EXISTS finlogic;
-   USE finlogic;
-   ```
-   *(Hacemos esto porque los proveedores de bases de datos gratuitas en la nube te entregan un esquema ya creado de fábrica como `defaultdb` y no permiten crear esquemas secundarios con usuarios comunes).*
-5. Haz clic en el botón **Ejecutar script SQL** (icono de Play con un rayo, o pulsa `Alt + X` en tu teclado) para que se creen de forma instantánea las tablas y columnas.
-
----
+#
 
 ## 🔗 Puertos de Acceso e Infraestructura
 
