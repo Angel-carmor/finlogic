@@ -24,11 +24,11 @@
 | `DB_PORT` | Puerto interno de MySQL dentro de la red del contenedor | `3306` |
 | `DB_PORT_EXTERNAL` | Puerto de MySQL expuesto hacia la máquina host local | `3307` |
 | `DB_USER` | Usuario estándar de la base de datos MySQL | `user` |
-| `DB_PASSWORD` | Contraseña del usuario estándar de la base de datos | `password` |
+| `DB_PASSWORD` | Contraseña del usuario estándar de la base de datos | `TU_PASSWORD_DB` |
 | `DB_NAME` | Nombre de la base de datos para la aplicación | `finlogic` |
-| `DB_ROOT_PASSWORD` | Contraseña del administrador (root) de MySQL | `rootpassword` |
+| `DB_ROOT_PASSWORD` | Contraseña del administrador (root) de MySQL | `TU_PASSWORD_ROOT` |
 | `PORT` | Puerto de escucha para la API del Backend (Express) | `3000` |
-| `JWT_SECRET` | Clave de cifrado de firma de tokens JWT | `super_secret_finlogic_key_123` |
+| `JWT_SECRET` | Clave de cifrado de firma de tokens JWT | `TU_SECRET_JWT` |
 | `VITE_PORT` | Puerto en el que arrancará el servidor de desarrollo Vite | `8080` |
 | `VITE_API_URL` | URL de la API consumida por el cliente frontend | `http://localhost:3000/api` |
 
@@ -115,7 +115,7 @@ Si deseas  un inicialización manual de las tablas utilizando el gestor gráfico
    - **Port:** `3307` *(¡Atención! Usamos el puerto redirigido **3307** en local para no interferir con instalaciones nativas de MySQL en el puerto por defecto 3306)*.
    - **Database:** `finlogic` *(o el valor de `DB_NAME`)*.
    - **Username:** `user` *(o el valor de `DB_USER`)*.
-   - **Password:** `password` *(o el valor de `DB_PASSWORD`)*.
+   - **Password:** `TU_PASSWORD_DB` *(o el valor de `DB_PASSWORD`)*.
 5. Haz clic en el botón **Probar conexión** (*Test Connection*).
    - *Si el gestor te indica que faltan los controladores (drivers) de conexión de MySQL, haz clic en **Descargar (Download)***.
 6. Una vez que la prueba retorne un mensaje de éxito con un check verde, haz clic en **Finalizar (Finish)**.
@@ -130,7 +130,7 @@ Una vez levantados los servicios con éxito, puedes acceder a ellos en las sigui
 |---|---|---|---|
 | **Frontend (App)** | [http://localhost:8080](http://localhost:8080) | Panel de control e interfaz de usuario de FinLogic | *(Regístrate libremente en la interfaz)* |
 | **Backend (API)** | [http://localhost:3000/api](http://localhost:3000/api) | Endpoint de verificación de salud de la API | N/A |
-| **Base de Datos** | `localhost:3307` | Servidor MySQL (Acceso externo para depuración) | `Usuario: user` / `Password: password` |
+| **Base de Datos** | `localhost:3307` | Servidor MySQL (Acceso externo para depuración) | `Usuario: user` / `Password: TU_PASSWORD_DB` |
 
 ---
 

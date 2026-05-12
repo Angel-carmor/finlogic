@@ -3,7 +3,7 @@ const mysql = require('mysql2/promise');
 const pool = mysql.createPool({
   host: process.env.DB_HOST || 'localhost',
   user: process.env.DB_USER || 'user',
-  password: process.env.DB_PASSWORD || 'password',
+  password: process.env.DB_PASSWORD || 'TU_PASSWORD_DB',
   database: process.env.DB_NAME || 'finlogic',
   waitForConnections: true,
   connectionLimit: 10,
