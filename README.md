@@ -1,7 +1,5 @@
 #  FinLogic
 
->  **[DOCUMENTACIÓN OFICIAL DE ENTREGA (HITO)](file:///home/angel/Documentos/www/proyectos/finlogic/DOCUMENTACION_ENTREGA.md)** — Consulta aquí los **Criterios de éxito**, variables de entorno `.env` e inicialización de la base de datos MySQL requerida por la evaluación.
-
 > **Plataforma inteligente de planificación financiera personal en tiempo real.**  
 > Diseñada para organizar presupuestos mensuales mediante la regla estratégica **50/30/20**, simular rentabilidad por interés compuesto a largo plazo y automatizar el plan de pago de pasivos mediante el método de **Avalancha**.
 
