@@ -3,58 +3,52 @@
     <Sidebar />
     
     <main class="main-content">
-      <Topbar title="Resumen Financiero" />
+      <Topbar />
 
-      <section class="kpi-grid">
-        <div class="kpi-card"><h3>Balance</h3><p>$24,562.00</p></div>
-        <div class="kpi-card"><h3>Ingresos</h3><p>$8,240.50</p></div>
-        <div class="kpi-card"><h3>Gastos</h3><p>$3,120.00</p></div>
-      </section>
+      <div class="dashboard-container">
+        <!-- ROW 1: Top KPIs -->
+        <KpiCards />
 
-      <section class="placeholder-area">
-        <p>Aquí irá el listado de transacciones o gráficos próximamente...</p>
-      </section>
+        <!-- ROW 2: Levers and Mirror -->
+        <div class="analysis-grid">
+          <!-- Card 4: Levers & Strategy Toggle -->
+          <BudgetLevers />
+
+          <!-- Card 5: Mirror -->
+          <MirrorChart />
+        </div>
+
+        <!-- ROW 3: Projection -->
+        <ProjectionPanel />
+      </div>
     </main>
   </div>
 </template>
 
 <script setup>
+import { onMounted } from 'vue';
+import { useFinanceStore } from '../store/finance';
 import Sidebar from '../components/layout/Sidebar.vue';
 import Topbar from '../components/layout/Topbar.vue';
+import KpiCards from '../components/dashboard/KpiCards.vue';
+import BudgetLevers from '../components/dashboard/BudgetLevers.vue';
+import MirrorChart from '../components/dashboard/MirrorChart.vue';
+import ProjectionPanel from '../components/dashboard/ProjectionPanel.vue';
+
+const financeStore = useFinanceStore();
+
+onMounted(() => {
+  financeStore.initBudget();
+});
 </script>
 
 <style scoped>
-.dashboard-layout {
-  display: flex;
-  height: 100vh;
-  background-color: #0f172a;
-  font-family: sans-serif;
-}
-.main-content {
-  flex: 1;
-  padding: 2rem;
-  overflow-y: auto;
-}
-.kpi-grid {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-.kpi-card {
-  flex: 1;
-  background: #1e293b;
-  padding: 1.5rem;
-  border-radius: 12px;
-  color: white;
-}
-.kpi-card h3 { margin: 0 0 0.5rem; font-size: 1rem; color: #94a3b8; }
-.kpi-card p { margin: 0; font-size: 1.8rem; font-weight: bold; }
-.placeholder-area {
-  background: #1e293b;
-  padding: 3rem;
-  border-radius: 12px;
-  color: #64748b;
-  text-align: center;
-  border: 1px dashed #334155;
+.dashboard-layout { display: flex; height: 100vh; background-color: var(--bg-base); font-family: 'Inter', monospace; color: var(--text-main); }
+.main-content { flex: 1; padding: 2rem; overflow-y: auto; background: var(--bg-base); }
+.dashboard-container { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 2rem; }
+.analysis-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+
+@media (max-width: 1000px) { 
+  .analysis-grid { grid-template-columns: 1fr; } 
 }
 </style>

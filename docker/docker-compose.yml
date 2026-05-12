@@ -6,12 +6,12 @@ services:
     container_name: finlogic_db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: finlogic
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${DB_NAME:-finlogic}
+      MYSQL_USER: ${DB_USER:-user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-password}
     ports:
-      - "3307:3306"
+      - "${DB_PORT_EXTERNAL:-3307}:3306"
     volumes:
       - db_data:/var/lib/mysql
       - ../database/init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -22,12 +22,14 @@ services:
     container_name: finlogic_api
     restart: always
     ports:
-      - "3000:3000"
+      - "${PORT:-3000}:${PORT:-3000}"
     environment:
-      DB_HOST: db
-      DB_USER: user
-      DB_PASSWORD: password
-      DB_NAME: finlogic
+      DB_HOST: ${DB_HOST:-db}
+      DB_USER: ${DB_USER:-user}
+      DB_PASSWORD: ${DB_PASSWORD:-password}
+      DB_NAME: ${DB_NAME:-finlogic}
+      PORT: ${PORT:-3000}
+      JWT_SECRET: ${JWT_SECRET:-super_secret_finlogic_key_123}
     depends_on:
       - db
     volumes:
@@ -40,7 +42,9 @@ services:
     container_name: finlogic_app
     restart: always
     ports:
-      - "8080:8080"
+      - "${VITE_PORT:-8080}:8080"
+    environment:
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:3000/api}
     depends_on:
       - api
     volumes:

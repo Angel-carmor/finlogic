@@ -22,7 +22,7 @@ class AuthService {
     // Generate token
     const token = jwt.sign({ id: userId, email }, JWT_SECRET, { expiresIn: '1d' });
     
-    return { user: { id: userId, email }, token };
+    return { user: { id: userId, email, onboarding_completed: false }, token };
   }
 
   static async login(email, password) {
@@ -41,7 +41,19 @@ class AuthService {
     // Generate token
     const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '1d' });
     
-    return { user: { id: user.id, email: user.email }, token };
+    const payload = { 
+      id: user.id, 
+      email: user.email, 
+      onboarding_completed: !!user.onboarding_completed,
+      planning_model: user.planning_model,
+      net_monthly_income: parseFloat(user.net_monthly_income) || 0,
+      fixed_loads: parseFloat(user.fixed_loads) || 0,
+      total_debt: parseFloat(user.total_debt) || 0,
+      housing: parseFloat(user.housing) || 0,
+      utilities: parseFloat(user.utilities) || 0
+    };
+    
+    return { user: payload, token };
   }
 }
 

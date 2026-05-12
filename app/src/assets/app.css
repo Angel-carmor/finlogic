@@ -1,0 +1,215 @@
+/* ===================================================
+   FINLOGIC - Shared Layout & Design System
+   =================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --bg-base: #12121e;
+  --bg-panel: #1e1e2f;
+  --border-color: #2a2a40;
+  --color-primary: #3b82f6;
+  --color-success: #00C805;
+  --color-danger: #FF6B6B;
+  --text-main: #E0E0E0;
+  --text-muted: #9E9E9E;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: var(--bg-base);
+  color: var(--text-main);
+}
+
+/* ── Layout ── */
+.app-layout {
+  display: flex;
+  height: 100vh;
+  background-color: var(--bg-base);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-main);
+}
+
+.app-main {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  background: var(--bg-base);
+}
+
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* ── Global Utility Classes ── */
+.green-text { color: var(--color-success) !important; }
+.red-text { color: var(--color-danger) !important; }
+.blue-text { color: var(--color-primary) !important; }
+
+/* ── Panels ── */
+.panel {
+  background: var(--bg-panel);
+  border-radius: 12px;
+  padding: 1.5rem 2rem;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.panel-title {
+  margin: 0 0 1.5rem 0;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.panel-title .icon {
+  width: 14px;
+  height: 14px;
+  color: var(--color-primary);
+}
+
+/* ── Form Fields ── */
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1.2rem;
+}
+
+.field-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.field-input {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  color: var(--text-main);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+}
+
+.field-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.field-input:disabled {
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+.field-input.currency-input {
+  padding-left: 2rem;
+}
+
+.currency-wrap {
+  position: relative;
+}
+
+.currency-symbol {
+  position: absolute;
+  left: 0.8rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  pointer-events: none;
+}
+
+/* ── Buttons ── */
+.btn-primary {
+  background: var(--color-primary);
+  border: none;
+  color: #FFFFFF;
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+
+.btn-primary:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-ghost:hover {
+  border-color: var(--text-muted);
+  color: #FFFFFF;
+}
+
+.btn-danger {
+  background: transparent;
+  border: 1px solid rgba(255, 107, 107, 0.3);
+  color: var(--color-danger);
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-danger:hover {
+  background: rgba(255, 107, 107, 0.1);
+  border-color: var(--color-danger);
+}
+
+/* ── Neon accents ── */
+.neon { color: var(--color-primary); }
+.neon-glow { text-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+
+/* ── Divider ── */
+.section-divider {
+  height: 1px;
+  background: var(--border-color);
+  margin: 1.5rem 0;
+}
+

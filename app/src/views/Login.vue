@@ -1,24 +1,27 @@
 <template>
-  <div class="auth-container">
-    <h2>Login a FinLogic</h2>
+  <div class="auth-container panel">
+    <div class="logo-container">
+      <img src="/logo.png" alt="FinLogic Logo" class="auth-logo" />
+    </div>
+    <h2 class="auth-title">Inicia Sesión</h2>
     <form @submit.prevent="handleLogin" class="auth-form">
-      <div class="form-group">
-        <label>Email</label>
-        <input type="email" v-model="email" required placeholder="tu@email.com" />
+      <div class="field-group">
+        <label class="field-label">Email</label>
+        <input class="field-input" type="email" v-model="email" required placeholder="tu@email.com" />
       </div>
-      <div class="form-group">
-        <label>Contraseña</label>
-        <input type="password" v-model="password" required placeholder="••••••••" />
+      <div class="field-group">
+        <label class="field-label">Contraseña</label>
+        <input class="field-input" type="password" v-model="password" required placeholder="••••••••" />
       </div>
       
       <div v-if="errorMsg" class="error-msg">{{ errorMsg }}</div>
       
-      <button type="submit" :disabled="isLoading">
+      <button class="btn-primary" type="submit" :disabled="isLoading">
         {{ isLoading ? 'Cargando...' : 'Entrar' }}
       </button>
       
       <p class="switch-auth">
-        ¿No tienes cuenta? <router-link to="/register">Regístrate</router-link>
+        ¿No tienes cuenta? <router-link class="neon" to="/register">Regístrate</router-link>
       </p>
     </form>
   </div>
@@ -55,55 +58,46 @@ const handleLogin = async () => {
 .auth-container {
   max-width: 400px;
   margin: 100px auto;
-  padding: 2rem;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   text-align: center;
+}
+.logo-container {
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+.auth-logo {
+  max-width: 280px;
+  height: auto;
+}
+.auth-title {
+  color: #E0E0E0;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.3rem;
 }
 .auth-form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  margin-top: 1.5rem;
-}
-.form-group {
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-  gap: 0.5rem;
-}
-input {
-  padding: 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  outline: none;
-}
-input:focus {
-  border-color: #646cff;
-}
-button {
-  padding: 0.75rem;
-  background-color: #646cff;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 1rem;
-}
-button:disabled {
-  background-color: #a5a9ff;
 }
 .error-msg {
-  color: #d32f2f;
-  background-color: #fde0e0;
-  padding: 0.5rem;
-  border-radius: 4px;
+  color: #FF3B30;
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
 }
 .switch-auth {
   margin-top: 1.5rem;
-  font-size: 0.9em;
-  color: #666;
+  font-size: 0.9rem;
+  color: #9E9E9E;
+}
+.switch-auth a {
+  text-decoration: none;
+  font-weight: 600;
+}
+.switch-auth a:hover {
+  text-decoration: underline;
 }
 </style>
