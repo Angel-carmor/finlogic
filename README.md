@@ -1,7 +1,7 @@
 #  FinLogic
 
 > **Plataforma inteligente de planificación financiera personal en tiempo real.**  
-> Diseñada para organizar presupuestos mensuales mediante la regla estratégica **50/30/20**, simular rentabilidad por interés compuesto a largo plazo y automatizar el plan de pago de pasivos mediante el método de **Avalancha**.
+> FinLogic es una plataforma inteligente de planificación financiera personal en tiempo real. Su objetivo principal es ayudar a los usuarios a organizar sus finanzas, salir de deudas y visualizar su crecimiento patrimonial a través de metodologías financieras probadas..
 
 ## 🛠️ Stack Tecnológico
 
