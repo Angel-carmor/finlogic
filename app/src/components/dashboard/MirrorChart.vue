@@ -2,7 +2,7 @@
   <div class="panel mirror-panel">
     <h3 class="with-icon">
       <svg viewBox="0 0 24 24" class="icon"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
-      Espejo del Futuro
+      {{ $t('mirror.title') }}
     </h3>
     
     <div class="mirror-content">
@@ -10,15 +10,22 @@
         <svg viewBox="0 0 42 42" class="donut">
           <circle class="donut-ring" cx="21" cy="21" r="15.915" fill="transparent" stroke="var(--border-color)" stroke-width="6"></circle>
           <circle v-for="segment in financeStore.segments" :key="segment.name"
-            class="donut-segment" cx="21" cy="21" r="15.915" 
+            class="donut-segment interactive-segment" cx="21" cy="21" r="15.915" 
             fill="transparent" :stroke="segment.color" stroke-width="6"
             :stroke-dasharray="`${segment.percent} ${100 - segment.percent}`"
-            :stroke-dashoffset="segment.offset">
+            :stroke-dashoffset="segment.offset"
+            @mouseenter="hoveredSegment = segment"
+            @mouseleave="hoveredSegment = null">
+            <title>{{ segment.name }}: €{{ segment.amount }} ({{ segment.percent }}%)</title>
           </circle>
         </svg>
         <div class="donut-center">
-          <span class="total-label">AHORRO</span>
-          <span class="total-amount isf-value" style="color: var(--color-success)">{{ financeStore.ahorroPct }}%</span>
+          <span class="total-label" :style="{ color: hoveredSegment ? hoveredSegment.color : 'var(--text-muted)' }">
+            {{ hoveredSegment ? (hoveredSegment.name.startsWith('new_') ? $t('budget.' + hoveredSegment.name).toUpperCase() : hoveredSegment.name.toUpperCase()) : $t('kpi.savings_label') }}
+          </span>
+          <span class="total-amount isf-value" :style="{ color: hoveredSegment ? hoveredSegment.color : 'var(--color-success)' }">
+            {{ hoveredSegment ? '€' + hoveredSegment.amount : financeStore.ahorroPct + '%' }}
+          </span>
         </div>
       </div>
 
@@ -27,7 +34,7 @@
           <div class="legend-item-header">
             <span class="dot" :style="{ backgroundColor: seg.color }"></span>
             <div class="legend-text">
-              <div class="name">{{ seg.name }}</div>
+              <div class="name">{{ seg.name.startsWith('new_') ? $t('budget.' + seg.name) : (seg.name === 'Ahorro' ? $t('kpi.savings_label') : seg.name) }}</div>
             </div>
           </div>
           <div class="pct" :style="{ color: seg.color }">{{ seg.percent }}%</div>
@@ -38,9 +45,13 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import { useFinanceStore } from '../../store/finance';
+import { useI18n } from 'vue-i18n';
 
 const financeStore = useFinanceStore();
+const { t } = useI18n();
+const hoveredSegment = ref(null);
 </script>
 
 <style scoped>
@@ -51,7 +62,9 @@ const financeStore = useFinanceStore();
 .mirror-content { display: flex; flex-direction: column; align-items: center; gap: 2rem; padding: 1rem 0; height: calc(100% - 2rem); justify-content: center; }
 .large-donut { width: 280px; position: relative; flex-shrink: 0; }
 .donut-segment { transition: all 0.5s ease-out; }
-.donut-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; display: flex; flex-direction: column; }
+.interactive-segment { cursor: pointer; transition: stroke-width 0.2s, opacity 0.2s; }
+.interactive-segment:hover { stroke-width: 8; opacity: 0.9; }
+.donut-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; display: flex; flex-direction: column; transition: color 0.3s; }
 .total-label { font-size: 0.8rem; color: var(--text-muted); font-family: monospace; }
 .isf-value { font-size: 2.2rem; color: var(--color-success); font-weight: 700; }
 

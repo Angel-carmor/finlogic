@@ -12,30 +12,30 @@
     <nav class="nav-menu">
       <router-link to="/dashboard" class="nav-item">
         <svg viewBox="0 0 24 24" class="icon"><path fill="currentColor" d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
-        <span v-if="!isCollapsed" class="nav-text">DASHBOARD</span>
+        <span v-if="!isCollapsed" class="nav-text">{{ $t('sidebar.dashboard') }}</span>
       </router-link>
       <router-link to="/analytics" class="nav-item">
         <svg viewBox="0 0 24 24" class="icon"><path fill="currentColor" d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
-        <span v-if="!isCollapsed" class="nav-text">ANALÍTICAS</span>
+        <span v-if="!isCollapsed" class="nav-text">{{ $t('sidebar.analytics') }}</span>
       </router-link>
       <router-link to="/investments" class="nav-item">
         <svg viewBox="0 0 24 24" class="icon"><path fill="currentColor" d="M3.5 18.5l6-6 4 4L22 6.92 20.59 5.5l-7.09 7.09-4-4L2 16.08z"/></svg>
-        <span v-if="!isCollapsed" class="nav-text">INVERSIONES</span>
+        <span v-if="!isCollapsed" class="nav-text">{{ $t('sidebar.investments') }}</span>
       </router-link>
       <router-link to="/financial-profile" class="nav-item">
         <svg viewBox="0 0 24 24" class="icon"><path fill="currentColor" d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
-        <span v-if="!isCollapsed" class="nav-text">PERFIL FINANCIERO</span>
-      </router-link>
-      <router-link to="/profile" class="nav-item">
-        <svg viewBox="0 0 24 24" class="icon"><path fill="currentColor" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-        <span v-if="!isCollapsed" class="nav-text">PERFIL</span>
+        <span v-if="!isCollapsed" class="nav-text">{{ $t('sidebar.financial_profile') }}</span>
       </router-link>
     </nav>
 
     <div class="sidebar-bottom">
-      <button @click="handleLogout" class="mission-btn" :title="isCollapsed ? 'Cerrar Sesión' : ''">
+      <router-link to="/profile" class="nav-item profile-item">
+        <svg viewBox="0 0 24 24" class="icon"><path fill="currentColor" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        <span v-if="!isCollapsed" class="nav-text">{{ $t('sidebar.profile') }}</span>
+      </router-link>
+      <button @click="handleLogout" class="mission-btn" :title="isCollapsed ? $t('sidebar.logout') : ''">
         <svg v-if="isCollapsed" viewBox="0 0 24 24" class="icon logout-icon"><path fill="currentColor" d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
-        <span v-else>CERRAR SESIÓN</span>
+        <span v-else>{{ $t('sidebar.logout') }}</span>
       </button>
     </div>
   </aside>
@@ -165,10 +165,23 @@ const handleLogout = () => {
 .sidebar-bottom { 
   margin-top: auto; 
   padding: 0 2rem; 
+  display: flex;
+  flex-direction: column;
 }
 .sidebar.collapsed .sidebar-bottom {
   padding: 0 1rem;
 }
+.profile-item {
+  padding: 1rem 0;
+  border-left: none;
+  margin-bottom: 0.8rem;
+  border-radius: 8px;
+}
+.sidebar.collapsed .profile-item {
+  padding: 1rem 0;
+  justify-content: center;
+}
+
 
 .mission-btn { 
   width: 100%; 

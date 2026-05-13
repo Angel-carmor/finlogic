@@ -9,8 +9,8 @@
 
           <!-- Header -->
           <div class="section-header">
-            <h2>Previsiones Analíticas</h2>
-            <p class="subtitle">HUD_PROYECCION: ACTIVO // RUTA OPTIMA CALCULADA</p>
+            <h2>{{ $t('analytics.title') }}</h2>
+            <p class="subtitle">{{ $t('analytics.subtitle') }}</p>
           </div>
 
 
@@ -22,26 +22,33 @@
               <div class="panel-header">
                 <h3 class="with-icon">
                   <svg viewBox="0 0 24 24" class="icon"><path fill="currentColor" d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
-                  Gráfico de Tijera (Deuda vs Ahorro)
+                  {{ $t('analytics.scissors_chart') }}
                 </h3>
               </div>
               <p class="panel-subtitle" style="display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 0.5rem;">
-                <span>Cap. de ahorro mensual: <b class="highlight-green">{{ ahorroMonthly }}€</b> · Deuda total: <b class="highlight-red">{{ totalDebtComputed }}€</b></span>
+                <span>{{ $t('analytics.savings_capacity') }}: <b class="highlight-green">{{ ahorroMonthly }}€</b> · {{ $t('analytics.total_debt') }}: <b class="highlight-red">{{ totalDebtComputed }}€</b></span>
                 <span style="font-size: 0.75rem; color: #7a7a9c;">*Asigna qué porcentaje de tu capacidad de ahorro destinarás a pagar las deudas.</span>
               </p>
               <div class="chart-controls">
                 <div class="control-col slider-col">
-                  <div class="control-labels">
-                    <span><b style="color:#FF6B6B">{{ debtAllocation }}%</b> a Deuda</span>
-                    <span><b style="color:#00C805">{{ 100 - debtAllocation }}%</b> a Ahorro</span>
+                  <div class="control-labels" style="margin-bottom: 0.5rem;">
+                    <span>{{ $t('analytics.debt_allocation') }}</span>
                   </div>
-                  <input type="range" min="0" max="100" step="5" v-model.number="debtAllocation" class="allocation-slider" />
+                  <div style="display: flex; align-items: center; gap: 0.8rem;">
+                    <div style="display: flex; align-items: center; background: var(--border-color); border-radius: 6px; border: 1px solid var(--border-color); padding-right: 0.5rem;">
+                      <input type="number" min="0" max="100" v-model.number="debtAllocation" class="months-select" style="width: 70px; text-align: right; font-weight: 700; color: #FF6B6B; border: none; background: transparent; font-size: 1.1rem; padding: 0.35rem 0.2rem 0.35rem 0.5rem;" />
+                      <span style="color: #FF6B6B; font-weight: 700; font-size: 1.1rem;">%</span>
+                    </div>
+                    <span style="color: #9E9E9E; font-size: 0.85rem; font-family: monospace;">( {{ Math.round(ahorroMonthly * (debtAllocation / 100)) }}€/mes )</span>
+                    <button @click="saveAllocation" class="btn-action" style="margin-left: 0.5rem; padding: 0.4rem 0.8rem; background: var(--color-primary); color: white; border: none;">{{ $t('analytics.save_changes') }}</button>
+                    <span v-if="showSavedMsg" style="color: var(--color-success); font-size: 0.85rem; font-family: monospace; font-weight: 700; margin-left: 0.5rem; animation: fadeInOut 2s ease forwards;">{{ $t('analytics.saved_success') }}</span>
+                  </div>
                 </div>
                 <div class="control-col date-col">
                   <div class="control-labels">
                     <span>
                       <svg viewBox="0 0 24 24" class="icon" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;color:#9E9E9E;"><path fill="currentColor" d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 002 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>
-                      Periodo de la gráfica
+                      {{ $t('analytics.chart_period') }}
                     </span>
                   </div>
                   <div style="display:flex; gap:0.5rem; align-items:center;">
@@ -55,7 +62,7 @@
                 <VueApexCharts v-if="chartReady" type="line" height="100%" width="100%" :options="chartOptions" :series="chartSeries" />
                 <div v-else class="chart-empty">
                   <svg viewBox="0 0 24 24" class="empty-icon"><path fill="currentColor" d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
-                  <p>Añade deudas en el panel superior para ver la proyección</p>
+                  <p>{{ $t('analytics.empty_chart') }}</p>
                 </div>
               </div>
             </div>
@@ -67,17 +74,17 @@
             <div class="panel timeline-panel">
               <h3 class="with-icon" style="margin-bottom: 2rem;">
                 <svg viewBox="0 0 24 24" class="icon" style="color: #fcd34d;"><path fill="currentColor" d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z"/></svg>
-                Línea de Tiempo de Hitos (Seguimiento Activo)
+                {{ $t('analytics.timeline_title') }}
               </h3>
               <div class="timeline-empty" v-if="milestones.length === 0">
-                <p>Los hitos se generarán automáticamente cuando añadas deudas.</p>
+                <p>{{ $t('analytics.timeline_empty') }}</p>
               </div>
               <div class="timeline" v-else>
                 <div class="timeline-item" v-for="milestone in milestones" :key="milestone.id">
                   <div class="timeline-marker" :class="{ 'marker-completed': milestone.status === 'completed' }"></div>
                   <div class="timeline-content" :class="{ 'content-completed': milestone.status === 'completed' }">
                     <div class="milestone-text">
-                      <div class="milestone-month">MES {{ milestone.month }}</div>
+                      <div class="milestone-month">{{ milestone.dateStr }}</div>
                       <div class="milestone-title">{{ milestone.title }}</div>
                     </div>
                     <div class="milestone-icon" v-if="milestone.icon === 'check'">
@@ -90,7 +97,7 @@
                       <svg viewBox="0 0 24 24" class="icon-brand"><path fill="currentColor" d="M12 3l10 9h-3v8h-6v-6h-2v6H5v-8H2l10-9z"/></svg>
                     </div>
                     <div class="milestone-status" v-if="milestone.status !== 'completed'">
-                      <button class="btn-action">Marcar Conseguido</button>
+                      <button class="btn-action" @click="markCompleted(milestone.id)">{{ $t('analytics.mark_completed') }}</button>
                     </div>
                   </div>
                 </div>
@@ -106,6 +113,7 @@
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '../store/auth';
 import api from '../services/api';
 import Sidebar from '../components/layout/Sidebar.vue';
@@ -113,6 +121,7 @@ import Topbar from '../components/layout/Topbar.vue';
 import VueApexCharts from 'vue3-apexcharts';
 
 const authStore = useAuthStore();
+const { t } = useI18n();
 const user = authStore.user || {};
 const token = authStore.token;
 
@@ -127,9 +136,30 @@ const chartSeries = ref([]);
 const chartReady = ref(false);
 const ahorroMonthly = ref(0);
 const milestones = ref([]);
-const debtAllocation = ref(50);
+
+const savedAllocation = localStorage.getItem('finlogic_debt_allocation_' + user.id);
+const debtAllocation = ref(savedAllocation ? parseInt(savedAllocation, 10) : 50);
+const showSavedMsg = ref(false);
+
+const saveAllocation = () => {
+  localStorage.setItem('finlogic_debt_allocation_' + user.id, debtAllocation.value);
+  showSavedMsg.value = true;
+  setTimeout(() => {
+    showSavedMsg.value = false;
+  }, 2000);
+};
+
 const sumExpenses = ref(0);
 const currentSavings = ref(parseFloat(localStorage.getItem('finlogic_current_savings_' + user.id)) || 0);
+
+const completedMilestoneIds = ref(new Set(JSON.parse(localStorage.getItem('finlogic_completed_milestones_' + user.id) || '[]')));
+
+const markCompleted = (id) => {
+  completedMilestoneIds.value.add(id);
+  localStorage.setItem('finlogic_completed_milestones_' + user.id, JSON.stringify([...completedMilestoneIds.value]));
+  const m = milestones.value.find(x => x.id === id);
+  if (m) m.status = 'completed';
+};
 
 const targetSavings = computed(() => sumExpenses.value * 3);
 const cushionMonths = computed(() => {
@@ -210,14 +240,25 @@ const chartOptions = ref({
 });
 
 function recalcChart() {
+  const dStart = new Date(projectionStart.value || new Date());
+  const dEnd = new Date(projectionEnd.value || new Date());
+  let MONTHS = (dEnd.getFullYear() - dStart.getFullYear()) * 12 + (dEnd.getMonth() - dStart.getMonth());
+  if (MONTHS < 1) MONTHS = 1;
+  if (MONTHS > 360) MONTHS = 360;
+
+  const getMilestoneDate = (mIndex) => {
+    const d = new Date(dStart.getFullYear(), dStart.getMonth() + mIndex, 1);
+    return d.toLocaleString('es-ES', { month: 'long', year: 'numeric' }).toUpperCase();
+  };
+
   const total = totalDebtComputed.value;
   if (total <= 0) {
     chartReady.value = false;
-    milestones.value = [{ id: 1, month: 2, title: 'Fondo de Seguridad Inicial: Completado', status: 'completed', icon: 'check' }];
+    milestones.value = [{ id: 1, dateStr: getMilestoneDate(2), title: t('analytics.milestone_1'), status: 'completed', icon: 'check' }];
     return;
   }
 
-  const monthlyDebtPayment = Math.max(10, ahorroMonthly.value * (debtAllocation.value / 100));
+  const monthlyDebtPayment = ahorroMonthly.value * (debtAllocation.value / 100);
   const monthlySavings = Math.max(0, ahorroMonthly.value - monthlyDebtPayment);
 
   const labels = [];
@@ -226,10 +267,6 @@ function recalcChart() {
   let debtRemaining = total;
   let accumulatedSavings = currentSavings.value || 0;
   let crossingMonth = null;
-  
-  const dStart = new Date(projectionStart.value || new Date());
-  const dEnd = new Date(projectionEnd.value || new Date());
-  let MONTHS = (dEnd.getFullYear() - dStart.getFullYear()) * 12 + (dEnd.getMonth() - dStart.getMonth());
   if (MONTHS < 1) MONTHS = 1;
   if (MONTHS > 360) MONTHS = 360;
 
@@ -253,12 +290,12 @@ function recalcChart() {
 
   chartSeries.value = [
     {
-      name: 'Ahorro Acumulado',
+      name: t('analytics.accumulated_savings'),
       type: 'area',
       data: ahorroData
     },
     {
-      name: 'Deuda Restante',
+      name: t('analytics.remaining_debt'),
       type: 'area',
       data: deudaData
     }
@@ -275,14 +312,14 @@ function recalcChart() {
 
   // Milestones
   const newMilestones = [
-    { id: 1, month: 2, title: 'Fondo de Seguridad Inicial: Completado', status: 'completed', icon: 'check' }
+    { id: 1, dateStr: getMilestoneDate(2), title: t('analytics.milestone_1'), status: completedMilestoneIds.value.has(1) ? 'completed' : 'future', icon: 'check' }
   ];
   if (crossingMonth) {
-    newMilestones.push({ id: 2, month: crossingMonth, title: 'Libertad Financiera (Ahorro supera Deuda)', status: 'future', icon: 'house' });
+    newMilestones.push({ id: 2, dateStr: getMilestoneDate(crossingMonth), title: t('analytics.milestone_2'), status: completedMilestoneIds.value.has(2) ? 'completed' : 'future', icon: 'house' });
   }
   const zeroDebtMonth = deudaData.findIndex(d => d === 0);
   if (zeroDebtMonth > 0 && zeroDebtMonth <= MONTHS) {
-    newMilestones.push({ id: 3, month: zeroDebtMonth, title: 'Liquidación Total de Deuda', status: 'future', icon: 'car' });
+    newMilestones.push({ id: 3, dateStr: getMilestoneDate(zeroDebtMonth), title: t('analytics.milestone_3'), status: completedMilestoneIds.value.has(3) ? 'completed' : 'future', icon: 'car' });
   }
   milestones.value = newMilestones;
 }
@@ -431,5 +468,12 @@ onMounted(async () => {
 
 @media (max-width: 900px) {
   .top-row { grid-template-columns: 1fr; }
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-5px); }
+  20% { opacity: 1; transform: translateY(0); }
+  80% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; }
 }
 </style>

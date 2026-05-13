@@ -2,14 +2,14 @@
   <div class="panel projection-panel">
     <h3 class="with-icon">
       <svg viewBox="0 0 24 24" class="icon"><path fill="currentColor" d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
-      Proyección Temporal (Ahorro vs Deuda a 3 años)
+      {{ $t('analytics.scissors_chart') }}
     </h3>
     
     <div class="financial-chart-box">
       <VueApexCharts v-if="chartReady" type="line" height="100%" width="100%" :options="chartOptions" :series="chartSeries" />
       <div v-else class="chart-empty" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--text-muted);">
         <svg viewBox="0 0 24 24" style="width:40px; height:40px; opacity:0.3; margin-bottom:1rem;"><path fill="currentColor" d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
-        <p style="font-size:0.9rem;">No hay proyecciones de deuda para mostrar.</p>
+        <p style="font-size:0.9rem;">{{ $t('analytics.empty_chart') }}</p>
       </div>
     </div>
   </div>
@@ -19,11 +19,13 @@
 import { ref, computed, onMounted, watch } from 'vue';
 import { useAuthStore } from '../../store/auth';
 import { useFinanceStore } from '../../store/finance';
+import { useI18n } from 'vue-i18n';
 import VueApexCharts from 'vue3-apexcharts';
 import api from '../../services/api';
 
 const authStore = useAuthStore();
 const financeStore = useFinanceStore();
+const { t } = useI18n();
 
 const debts = ref([]);
 const chartReady = ref(false);
@@ -44,12 +46,9 @@ const chartOptions = ref({
 });
 
 function recalcChart() {
-  const total = financeStore.totalDebtComputed;
-  if (total <= 0) {
-    chartReady.value = false;
-    return;
-  }
-  const monthlyDebtPayment = Math.max(10, financeStore.ahorroAmount * 0.5); // Asignación fija del 50% para el dashboard
+  const total = financeStore.totalDebtComputed || 0;
+  
+  const monthlyDebtPayment = total > 0 ? Math.max(10, financeStore.ahorroAmount * 0.5) : 0;
   const monthlySavings = Math.max(0, financeStore.ahorroAmount - monthlyDebtPayment);
   
   const labels = [];
@@ -77,8 +76,8 @@ function recalcChart() {
   }
 
   chartSeries.value = [
-    { name: 'Ahorro Acumulado', type: 'area', data: ahorroData },
-    { name: 'Deuda Restante', type: 'area', data: deudaData }
+    { name: t('analytics.accumulated_savings'), type: 'area', data: ahorroData },
+    { name: t('analytics.remaining_debt'), type: 'area', data: deudaData }
   ];
 
   chartOptions.value = {
