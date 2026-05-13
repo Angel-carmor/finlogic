@@ -8,7 +8,7 @@
         <!-- Header Section -->
         <div class="top-section panel">
           <div class="portfolio-info">
-            <h2 class="title">TOTAL DEL PORTAFOLIO</h2>
+            <h2 class="title">{{ $t('investments_page.portfolio_total') }}</h2>
             <div class="kpi-val green-text">
               {{ totalMarketValue >= totalInvested ? '' : '' }}€ {{ totalMarketValue.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
             </div>
@@ -22,9 +22,9 @@
               <apexchart type="donut" height="150" :options="chartOptions" :series="chartSeries"></apexchart>
             </div>
             <div class="chart-legend">
-              <div class="legend-item"><span class="dot" style="background: #3b82f6;"></span> ACCIONES<br/><strong>{{ (chartSeries[0] / totalMarketValue * 100).toFixed(0) || 0 }}%</strong></div>
-              <div class="legend-item"><span class="dot" style="background: #00C805;"></span> CRIPTO<br/><strong>{{ (chartSeries[1] / totalMarketValue * 100).toFixed(0) || 0 }}%</strong></div>
-              <div class="legend-item"><span class="dot" style="background: #9E9E9E;"></span> EFECTIVO<br/><strong>0%</strong></div>
+              <div class="legend-item"><span class="dot" style="background: #3b82f6;"></span> {{ $t('investments_page.stocks') }}<br/><strong>{{ (chartSeries[0] / totalMarketValue * 100).toFixed(0) || 0 }}%</strong></div>
+              <div class="legend-item"><span class="dot" style="background: #00C805;"></span> {{ $t('investments_page.crypto') }}<br/><strong>{{ (chartSeries[1] / totalMarketValue * 100).toFixed(0) || 0 }}%</strong></div>
+              <div class="legend-item"><span class="dot" style="background: #9E9E9E;"></span> {{ $t('investments_page.cash') }}<br/><strong>0%</strong></div>
             </div>
           </div>
         </div>
@@ -35,7 +35,7 @@
           <div class="left-col">
             <h3 class="section-title">
               <svg viewBox="0 0 24 24" class="icon"><path fill="currentColor" d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
-              POSICIONES ABIERTAS
+              {{ $t('investments_page.open_positions') }}
             </h3>
             
             <div class="positions-list" v-if="investments.length > 0">
@@ -54,12 +54,12 @@
                 </div>
                 
                 <div class="card-data">
-                  <div class="kpi-lbl">INVERTIDO</div>
+                  <div class="kpi-lbl">{{ $t('investments_page.invested') }}</div>
                   <div class="card-val">€{{ parseFloat(inv.amount).toLocaleString('es-ES') }}</div>
                 </div>
                 
                 <div class="card-data">
-                  <div class="kpi-lbl">VALOR ACTUAL</div>
+                  <div class="kpi-lbl">{{ $t('investments_page.current_value') }}</div>
                   <div class="card-val" v-if="inv.marketData">
                     €{{ (parseFloat(inv.amount) * (1 + inv.marketData.changePercent / 100)).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
                   </div>
@@ -67,7 +67,7 @@
                 </div>
                 
                 <div class="card-data" style="text-align: right;">
-                  <div class="kpi-lbl">VAR (24h)</div>
+                  <div class="kpi-lbl">{{ $t('investments_page.var_24h') }}</div>
                   <div class="card-val" v-if="inv.marketData" :class="inv.marketData.change >= 0 ? 'green-text' : 'red-text'">
                     {{ inv.marketData.change >= 0 ? '+' : '' }}{{ inv.marketData.changePercent.toFixed(2) }}%
                     <div style="font-size: 0.7rem; color: #9E9E9E;">Perfección 24h</div>
@@ -79,7 +79,7 @@
               </div>
             </div>
             <div class="market-empty panel" v-else>
-              <p>No tienes posiciones abiertas en este momento.</p>
+              <p>{{ $t('investments_page.no_positions') }}</p>
             </div>
           </div>
 
@@ -89,12 +89,12 @@
             <div class="panel winners-losers">
               <h3 class="section-title">
                 <svg viewBox="0 0 24 24" class="icon"><path fill="currentColor" d="M3.5 18.5l6-6 4 4L22 6.92 20.59 5.5l-7.09 7.09-4-4L2 17.08z"/></svg>
-                TOP GANADORES/PERDEDORES
+                {{ $t('investments_page.top_winners_losers') }}
               </h3>
               
               <div class="tabs">
-                <div class="tab active">GANADORES</div>
-                <div class="tab">PERDEDORES</div>
+                <div class="tab active">{{ $t('investments_page.winners') }}</div>
+                <div class="tab">{{ $t('investments_page.losers') }}</div>
               </div>
               
               <div class="top-list">
@@ -112,12 +112,12 @@
             <!-- Formulario de Inversión -->
             <div class="panel add-panel">
               <h3 class="section-title" style="color: #3b82f6;">
-                + AÑADIR POSICIÓN
+                {{ $t('investments_page.add_position') }}
               </h3>
               <div class="add-form">
                 <div class="field-group" style="position: relative;">
-                  <label class="field-label">SÍMBOLO (TICKER)</label>
-                  <input class="field-input" type="text" v-model="newInvestment.ticker" @input="debouncedSearch" placeholder="Ej: AAPL, SPY, BTC-USD" style="text-transform: uppercase;" autocomplete="off" />
+                  <label class="field-label">{{ $t('investments_page.ticker_symbol') }}</label>
+                  <input class="field-input" type="text" v-model="newInvestment.ticker" @input="debouncedSearch" :placeholder="$t('investments_page.ph_ticker')" style="text-transform: uppercase;" autocomplete="off" />
                   
                   <!-- Autocomplete Dropdown -->
                   <div class="autocomplete-dropdown" v-if="searchResults.length > 0 && showDropdown">
@@ -128,11 +128,11 @@
                   </div>
                 </div>
                 <div class="field-group">
-                  <label class="field-label">NOMBRE DEL ACTIVO</label>
-                  <input class="field-input" type="text" v-model="newInvestment.name" placeholder="Ej: Apple Inc." />
+                  <label class="field-label">{{ $t('investments_page.asset_name') }}</label>
+                  <input class="field-input" type="text" v-model="newInvestment.name" :placeholder="$t('investments_page.ph_name')" />
                 </div>
                 <div class="field-group">
-                  <label class="field-label">CAPITAL INVERTIDO (€)</label>
+                  <label class="field-label">{{ $t('investments_page.capital_invested') }}</label>
                   <div class="currency-wrap">
                     <input class="field-input currency-input" type="number" v-model.number="newInvestment.amount" min="0" step="10" placeholder="0" />
                   </div>
@@ -140,7 +140,7 @@
                 
                 <div class="add-form-action" style="margin-top: 1rem;">
                   <button class="btn-primary" @click="addInvestment" :disabled="loading || !newInvestment.name || !newInvestment.amount">
-                    {{ loading ? 'Procesando...' : 'Comprar / Añadir' }}
+                    {{ loading ? $t('investments_page.btn_processing') : $t('investments_page.btn_add') }}
                   </button>
                   <p v-if="errorMsg" class="error-msg">{{ errorMsg }}</p>
                 </div>
@@ -158,6 +158,7 @@
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue';
 import { useAuthStore } from '../store/auth';
+import { useI18n } from 'vue-i18n';
 import api from '../services/api';
 import Sidebar from '../components/layout/Sidebar.vue';
 import Topbar from '../components/layout/Topbar.vue';
@@ -166,6 +167,7 @@ import VueApexCharts from 'vue3-apexcharts';
 const apexchart = VueApexCharts;
 
 const authStore = useAuthStore();
+const { t } = useI18n();
 const user = authStore.user || {};
 
 const investments = ref([]);

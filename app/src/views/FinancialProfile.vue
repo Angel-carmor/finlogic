@@ -7,14 +7,14 @@
 
         <div class="page-header">
           <div>
-            <h2 class="page-heading">Perfil Financiero</h2>
-            <p class="page-sub">Sala de Máquinas · Define tu realidad económica actual</p>
+            <h2 class="page-heading">{{ $t('financial_profile.page_title') }}</h2>
+            <p class="page-sub">{{ $t('financial_profile.page_sub') }}</p>
           </div>
           <button class="btn-primary save-all-btn" @click="saveAll" :disabled="isSaving">
-            {{ isSaving ? 'Sincronizando...' : '💾 Guardar y Sincronizar' }}
+            {{ isSaving ? $t('financial_profile.btn_saving') : $t('financial_profile.btn_save') }}
           </button>
         </div>
-        <p v-if="saveSuccess" class="save-success-banner">✓ Datos sincronizados correctamente con la base de datos.</p>
+        <p v-if="saveSuccess" class="save-success-banner">{{ $t('financial_profile.save_success') }}</p>
 
         <div class="fp-grid">
 
@@ -25,24 +25,24 @@
             <div class="panel">
               <h3 class="section-title">
                 <svg viewBox="0 0 24 24" class="s-icon green"><path fill="currentColor" d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
-                Ingresos
+                {{ $t('financial_profile.income_title') }}
               </h3>
               <div class="two-col">
                 <div class="field-group">
-                  <label class="field-label">Sueldo Neto Mensual</label>
+                  <label class="field-label">{{ $t('financial_profile.net_salary') }}</label>
                   <div class="currency-wrap"><span class="currency-symbol">€</span>
                     <input class="field-input currency-input" type="number" v-model.number="form.net_monthly_income" min="0" step="50" />
                   </div>
                 </div>
                 <div class="field-group">
-                  <label class="field-label">Otros Ingresos <span class="badge-opt">Opcional</span></label>
+                  <label class="field-label">{{ $t('financial_profile.extra_income') }} <span class="badge-opt">{{ $t('financial_profile.optional') }}</span></label>
                   <div class="currency-wrap"><span class="currency-symbol">€</span>
                     <input class="field-input currency-input" type="number" v-model.number="form.extra_income" min="0" step="10" />
                   </div>
                 </div>
               </div>
               <div class="total-row">
-                <span class="total-lbl">Total ingreso mensual estimado</span>
+                <span class="total-lbl">{{ $t('financial_profile.total_income') }}</span>
                 <span class="total-val green-text">{{ totalIncome.toLocaleString('es-ES') }} €</span>
               </div>
             </div>
@@ -51,24 +51,24 @@
             <div class="panel">
               <h3 class="section-title">
                 <svg viewBox="0 0 24 24" class="s-icon yellow"><path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-                Gastos Fijos
+                {{ $t('financial_profile.fixed_expenses_title') }}
               </h3>
               <div class="two-col">
                 <div class="field-group">
-                  <label class="field-label">Vivienda / Hipoteca</label>
+                  <label class="field-label">{{ $t('financial_profile.housing') }}</label>
                   <div class="currency-wrap"><span class="currency-symbol">€</span>
                     <input class="field-input currency-input" type="number" v-model.number="form.housing" min="0" step="10" />
                   </div>
                 </div>
                 <div class="field-group">
-                  <label class="field-label">Suministros (Luz, Agua, etc.)</label>
+                  <label class="field-label">{{ $t('financial_profile.utilities') }}</label>
                   <div class="currency-wrap"><span class="currency-symbol">€</span>
                     <input class="field-input currency-input" type="number" v-model.number="form.utilities" min="0" step="10" />
                   </div>
                 </div>
               </div>
               <div class="total-row">
-                <span class="total-lbl">Total gastos fijos</span>
+                <span class="total-lbl">{{ $t('financial_profile.total_fixed') }}</span>
                 <span class="total-val red-text">{{ totalFixed.toLocaleString('es-ES') }} €</span>
               </div>
             </div>
@@ -82,17 +82,17 @@
                 <div>
                   <h3 class="section-title" style="margin-bottom:0.2rem">
                     <svg viewBox="0 0 24 24" class="s-icon red"><path fill="currentColor" d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
-                    Gestor de Deudas
+                    {{ $t('financial_profile.debt_manager') }}
                   </h3>
-                  <p class="panel-subtitle">Añade cada deuda por separado para proyecciones precisas.</p>
+                  <p class="panel-subtitle">{{ $t('financial_profile.debt_subtitle') }}</p>
                 </div>
                 <div class="debt-kpis">
                   <div class="kpi-box">
-                    <span class="kpi-lbl">TOTAL DEUDA</span>
+                    <span class="kpi-lbl">{{ $t('financial_profile.total_debt') }}</span>
                     <span class="kpi-val red-text">{{ totalDebt.toLocaleString('es-ES') }}€</span>
                   </div>
                   <div class="kpi-box">
-                    <span class="kpi-lbl">CUOTA/MES</span>
+                    <span class="kpi-lbl">{{ $t('financial_profile.monthly_fee') }}</span>
                     <span class="kpi-val yellow-text">{{ totalMonthlyPayment.toLocaleString('es-ES') }}€</span>
                   </div>
                 </div>
@@ -103,7 +103,7 @@
               <!-- Debt Table -->
               <div class="debt-table" v-if="debts.length > 0">
                 <div class="debt-table-head">
-                  <span>Nombre</span><span>Capital</span><span>Interés</span><span>Cuota/mes</span><span></span>
+                  <span>{{ $t('financial_profile.debt_name') }}</span><span>{{ $t('financial_profile.debt_capital') }}</span><span>{{ $t('financial_profile.debt_interest') }}</span><span>{{ $t('financial_profile.debt_fee') }}</span><span></span>
                 </div>
                 <div class="debt-table-row" v-for="debt in sortedDebts" :key="debt.id">
                   <span class="d-name">{{ debt.name }}</span>
@@ -114,32 +114,32 @@
                 </div>
               </div>
               <div class="debt-empty" v-else>
-                <p>Sin deudas registradas. Añade la primera abajo.</p>
+                <p>{{ $t('financial_profile.no_debts') }}</p>
               </div>
 
               <!-- Add Debt Form -->
               <div class="add-form">
-                <h4 class="add-form-title">+ Nueva Deuda</h4>
+                <h4 class="add-form-title">{{ $t('financial_profile.new_debt') }}</h4>
                 <div class="add-form-grid">
                   <div class="field-group">
-                    <label class="field-label">Nombre</label>
-                    <input class="field-input" type="text" v-model="newDebt.name" placeholder="Ej: Tarjeta VISA, Coche..." />
+                    <label class="field-label">{{ $t('financial_profile.debt_name') }}</label>
+                    <input class="field-input" type="text" v-model="newDebt.name" :placeholder="$t('financial_profile.ph_name')" />
                   </div>
                   <div class="field-group">
-                    <label class="field-label">Capital pendiente (€)</label>
+                    <label class="field-label">{{ $t('financial_profile.capital_pending') }}</label>
                     <div class="currency-wrap"><span class="currency-symbol">€</span>
                       <input class="field-input currency-input" type="number" v-model.number="newDebt.amount" min="0" step="100" placeholder="0" />
                     </div>
                   </div>
                   <div class="field-group">
-                    <label class="field-label">Tipo de interés (%)</label>
+                    <label class="field-label">{{ $t('financial_profile.interest_rate') }}</label>
                     <div class="currency-wrap">
                       <input class="field-input" type="number" v-model.number="newDebt.interest_rate" min="0" max="100" step="0.1" placeholder="0.0" />
                       <span class="currency-symbol" style="left:auto;right:0.8rem">%</span>
                     </div>
                   </div>
                   <div class="field-group">
-                    <label class="field-label">Cuota mensual (€)</label>
+                    <label class="field-label">{{ $t('financial_profile.monthly_payment') }}</label>
                     <div class="currency-wrap"><span class="currency-symbol">€</span>
                       <input class="field-input currency-input" type="number" v-model.number="newDebt.monthly_payment" min="0" step="10" placeholder="0" />
                     </div>
@@ -147,7 +147,7 @@
                 </div>
                 <div class="add-form-action">
                   <button class="btn-primary" @click="addDebt" :disabled="loadingDebt || !newDebt.name || !newDebt.amount">
-                    {{ loadingDebt ? 'Añadiendo...' : 'Añadir Deuda' }}
+                    {{ loadingDebt ? $t('financial_profile.btn_adding') : $t('financial_profile.btn_add_debt') }}
                   </button>
                   <p v-if="debtError" class="error-msg">{{ debtError }}</p>
                 </div>
@@ -164,12 +164,14 @@
 
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '../store/auth';
 import api from '../services/api';
 import Sidebar from '../components/layout/Sidebar.vue';
 import Topbar from '../components/layout/Topbar.vue';
 
 const authStore = useAuthStore();
+const { t } = useI18n();
 const user = computed(() => authStore.user || {});
 const token = authStore.token;
 

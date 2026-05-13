@@ -17,6 +17,7 @@ class AuthController {
       const result = await AuthService.register(email, password);
       return res.status(201).json(result);
     } catch (error) {
+      console.error('Register error:', error);
       if (error.message === 'User already exists') {
         return res.status(409).json({ error: error.message });
       }
@@ -35,6 +36,7 @@ class AuthController {
       const result = await AuthService.login(email, password);
       return res.status(200).json(result);
     } catch (error) {
+      console.error('Login error:', error);
       if (error.message === 'Invalid credentials') {
         return res.status(401).json({ error: error.message });
       }
