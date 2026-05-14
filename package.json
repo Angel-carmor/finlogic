@@ -1,0 +1,13 @@
+{
+  "name": "finlogic-root",
+  "version": "1.0.0",
+  "description": "Root management for FinLogic project",
+  "scripts": {
+    "test:api": "npm test --prefix api",
+    "test": "npm run test:api",
+    "docker:up": "docker-compose -f docker/docker-compose.yml up -d",
+    "docker:down": "docker-compose -f docker/docker-compose.yml down",
+    "backup": "./scripts/db-backup.sh",
+    "restore": "bash -c './scripts/db-restore.sh \"$@\"' --"
+  }
+}

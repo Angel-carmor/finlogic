@@ -3,6 +3,7 @@
     <Sidebar />
     
     <main class="main-content">
+      <TourGuide page="dashboard" />
       <Topbar />
 
       <div class="dashboard-container">
@@ -40,6 +41,7 @@ import BudgetLevers from '../components/dashboard/BudgetLevers.vue';
 import MirrorChart from '../components/dashboard/MirrorChart.vue';
 import ProjectionPanel from '../components/dashboard/ProjectionPanel.vue';
 import DebtAndInvestments from '../components/dashboard/DebtAndInvestments.vue';
+import TourGuide from '../components/TourGuide.vue';
 
 const financeStore = useFinanceStore();
 

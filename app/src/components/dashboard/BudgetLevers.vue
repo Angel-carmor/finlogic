@@ -1,5 +1,5 @@
 <template>
-  <div class="levers-container">
+  <div class="levers-container" id="tour-levers">
     <!-- STRATEGY TOGGLE -->
     <div class="strategy-toggle">
       <button 

@@ -1,8 +1,8 @@
 const express = require('express');
 const cors = require('cors');
+const pool = require('./config/db');
 
 const app = express();
-const port = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
@@ -21,6 +21,12 @@ app.get('/api', (req, res) => {
   res.json({ message: 'FinLogic API is running successfully' });
 });
 
-app.listen(port, () => {
-  console.log(`API Server running on port ${port}`);
+// Middleware global de errores
+app.use((err, req, res, next) => {
+  if (process.env.NODE_ENV !== 'test') {
+    console.error('Error no controlado:', err);
+  }
+  res.status(500).json({ error: 'Internal Server Error', message: err.message });
 });
+
+module.exports = app;

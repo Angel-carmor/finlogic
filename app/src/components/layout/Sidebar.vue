@@ -1,5 +1,5 @@
 <template>
-  <aside class="sidebar" :class="{ 'collapsed': isCollapsed }">
+  <aside class="sidebar" :class="{ 'collapsed': isCollapsed }" id="tour-sidebar">
     <div class="brand">
       <div v-if="!isCollapsed" class="logo-container">
         <img src="/logo.png" alt="Finlogic Logo" class="brand-logo" />
@@ -10,19 +10,19 @@
     </div>
     
     <nav class="nav-menu">
-      <router-link to="/dashboard" class="nav-item">
+      <router-link to="/dashboard" class="nav-item" id="tour-nav-dashboard">
         <svg viewBox="0 0 24 24" class="icon"><path fill="currentColor" d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
         <span v-if="!isCollapsed" class="nav-text">{{ $t('sidebar.dashboard') }}</span>
       </router-link>
-      <router-link to="/analytics" class="nav-item">
+      <router-link to="/analytics" class="nav-item" id="tour-nav-analytics">
         <svg viewBox="0 0 24 24" class="icon"><path fill="currentColor" d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
         <span v-if="!isCollapsed" class="nav-text">{{ $t('sidebar.analytics') }}</span>
       </router-link>
-      <router-link to="/investments" class="nav-item">
+      <router-link to="/investments" class="nav-item" id="tour-nav-investments">
         <svg viewBox="0 0 24 24" class="icon"><path fill="currentColor" d="M3.5 18.5l6-6 4 4L22 6.92 20.59 5.5l-7.09 7.09-4-4L2 16.08z"/></svg>
         <span v-if="!isCollapsed" class="nav-text">{{ $t('sidebar.investments') }}</span>
       </router-link>
-      <router-link to="/financial-profile" class="nav-item">
+      <router-link to="/financial-profile" class="nav-item" id="tour-nav-financial-profile">
         <svg viewBox="0 0 24 24" class="icon"><path fill="currentColor" d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
         <span v-if="!isCollapsed" class="nav-text">{{ $t('sidebar.financial_profile') }}</span>
       </router-link>
