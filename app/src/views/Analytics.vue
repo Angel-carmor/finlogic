@@ -2,13 +2,14 @@
   <div class="dashboard-layout">
     <Sidebar />
     <main class="main-content">
+      <TourGuide page="analytics" />
       <Topbar />
 
       <div class="dashboard-container">
         <div class="previsions-section">
 
           <!-- Header -->
-          <div class="section-header">
+          <div class="section-header" id="tour-analytics-header">
             <h2>{{ $t('analytics.title') }}</h2>
             <p class="subtitle">{{ $t('analytics.subtitle') }}</p>
           </div>
@@ -29,7 +30,7 @@
                 <span>{{ $t('analytics.savings_capacity') }}: <b class="highlight-green">{{ ahorroMonthly }}€</b> · {{ $t('analytics.total_debt') }}: <b class="highlight-red">{{ totalDebtComputed }}€</b></span>
                 <span style="font-size: 0.75rem; color: #7a7a9c;">*Asigna qué porcentaje de tu capacidad de ahorro destinarás a pagar las deudas.</span>
               </p>
-              <div class="chart-controls">
+              <div class="chart-controls" id="tour-analytics-controls">
                 <div class="control-col slider-col">
                   <div class="control-labels" style="margin-bottom: 0.5rem;">
                     <span>{{ $t('analytics.debt_allocation') }}</span>
@@ -71,7 +72,7 @@
           <!-- Bottom Row: Timeline -->
           <div class="bottom-blocks">
             <!-- Milestones Timeline -->
-            <div class="panel timeline-panel">
+            <div class="panel timeline-panel" id="tour-analytics-timeline">
               <h3 class="with-icon" style="margin-bottom: 2rem;">
                 <svg viewBox="0 0 24 24" class="icon" style="color: #fcd34d;"><path fill="currentColor" d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z"/></svg>
                 {{ $t('analytics.timeline_title') }}
@@ -119,6 +120,7 @@ import api from '../services/api';
 import Sidebar from '../components/layout/Sidebar.vue';
 import Topbar from '../components/layout/Topbar.vue';
 import VueApexCharts from 'vue3-apexcharts';
+import TourGuide from '../components/TourGuide.vue';
 
 const authStore = useAuthStore();
 const { t } = useI18n();

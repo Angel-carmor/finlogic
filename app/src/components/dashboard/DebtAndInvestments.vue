@@ -1,5 +1,5 @@
 <template>
-  <div class="debt-investments-container">
+  <div class="debt-investments-container" id="tour-debt">
     <div class="panel list-panel">
       <h3 class="section-title">
         <span class="dot red-dot"></span> {{ $t('debts_investments.debts') }}

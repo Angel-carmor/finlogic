@@ -1,5 +1,5 @@
 <template>
-  <div class="kpi-grid">
+  <div class="kpi-grid" id="tour-kpi">
     <!-- Card 1: Semaphore -->
     <div class="panel kpi-card">
       <div class="kpi-header">

@@ -2,11 +2,12 @@
   <div class="dashboard-layout">
     <Sidebar />
     <main class="main-content">
+      <TourGuide page="investments" />
       <Topbar />
 
       <div class="dashboard-container">
         <!-- Header Section -->
-        <div class="top-section panel">
+        <div class="top-section panel" id="tour-investments-header">
           <div class="portfolio-info">
             <h2 class="title">{{ $t('investments_page.portfolio_total') }}</h2>
             <div class="kpi-val green-text">
@@ -17,7 +18,7 @@
             </div>
           </div>
           
-          <div class="portfolio-chart" v-if="investments.length > 0">
+          <div class="portfolio-chart" v-if="investments.length > 0" id="tour-investments-chart">
             <div class="chart-wrapper">
               <apexchart type="donut" height="150" :options="chartOptions" :series="chartSeries"></apexchart>
             </div>
@@ -32,7 +33,7 @@
         <div class="middle-blocks">
           
           <!-- Posiciones Abiertas -->
-          <div class="left-col">
+          <div class="left-col" id="tour-investments-positions">
             <h3 class="section-title">
               <svg viewBox="0 0 24 24" class="icon"><path fill="currentColor" d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
               {{ $t('investments_page.open_positions') }}
@@ -110,7 +111,7 @@
             </div>
 
             <!-- Formulario de Inversión -->
-            <div class="panel add-panel">
+            <div class="panel add-panel" id="tour-investments-add">
               <h3 class="section-title" style="color: #3b82f6;">
                 {{ $t('investments_page.add_position') }}
               </h3>
@@ -163,6 +164,7 @@ import api from '../services/api';
 import Sidebar from '../components/layout/Sidebar.vue';
 import Topbar from '../components/layout/Topbar.vue';
 import VueApexCharts from 'vue3-apexcharts';
+import TourGuide from '../components/TourGuide.vue';
 
 const apexchart = VueApexCharts;
 

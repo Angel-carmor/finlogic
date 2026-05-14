@@ -57,3 +57,37 @@ CREATE TABLE IF NOT EXISTS user_investments (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+-- =========================================================================
+-- VOLCADO DE DATOS SEMILLA (SEED DATA) PARA PRUEBAS Y EVALUACIÓN
+-- =========================================================================
+
+-- 1. Inserción de Usuario Demo (Email: admin@finlogic.com | Contraseña: SecurityPass123!)
+-- Hash Bcrypt precalculado para SecurityPass123!: $2a$10$bJWlegIDIlfoIzgxu9oXduFsTKNKWQh/ULEEZvdUPWU.xbQNgB4DW
+INSERT INTO users (id, email, password_hash, net_monthly_income, fixed_loads, housing, utilities, total_debt, onboarding_completed, planning_model, debt_strategy)
+VALUES (1, 'admin@finlogic.com', '$2a$10$bJWlegIDIlfoIzgxu9oXduFsTKNKWQh/ULEEZvdUPWU.xbQNgB4DW', 3000.00, 12000.00, 800.00, 200.00, 14500.00, TRUE, '50/30/20', 'avalanche')
+ON DUPLICATE KEY UPDATE id=id;
+
+-- 2. Inserción de Deudas Semilla para el Usuario Demo (id: 1)
+INSERT INTO user_debts (id, user_id, name, amount, interest_rate, monthly_payment)
+VALUES 
+  (1, 1, 'Préstamo Coche', 12000.00, 5.50, 250.00),
+  (2, 1, 'Tarjeta de Crédito', 2500.00, 15.00, 100.00)
+ON DUPLICATE KEY UPDATE id=id;
+
+-- 3. Inserción de Transacciones Semilla para el Usuario Demo (id: 1)
+INSERT INTO transactions (id, user_id, type, amount, description, category, date)
+VALUES 
+  (1, 1, 'income', 3000.00, 'Nómina Mensual', 'Salary', '2026-05-01'),
+  (2, 1, 'expense', 800.00, 'Alquiler Piso', 'Housing', '2026-05-02'),
+  (3, 1, 'expense', 150.00, 'Supermercado Mensual', 'Food', '2026-05-03'),
+  (4, 1, 'expense', 50.00, 'Factura de Luz', 'Utilities', '2026-05-04')
+ON DUPLICATE KEY UPDATE id=id;
+
+-- 4. Inserción de Inversiones Semilla para el Usuario Demo (id: 1)
+INSERT INTO user_investments (id, user_id, name, ticker, amount, annual_return, monthly_contribution)
+VALUES 
+  (1, 1, 'Apple Inc.', 'AAPL', 1750.00, 8.50, 100.00),
+  (2, 1, 'Bitcoin', 'BTC-USD', 3200.00, 12.00, 50.00)
+ON DUPLICATE KEY UPDATE id=id;
+

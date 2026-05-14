@@ -27,6 +27,11 @@ class UserModel {
     );
     return result.affectedRows;
   }
+
+  static async delete(id) {
+    const [result] = await db.execute('DELETE FROM users WHERE id = ?', [id]);
+    return result.affectedRows;
+  }
 }
 
 module.exports = UserModel;
