@@ -77,7 +77,7 @@
             <div class="slider-info">
               <div class="label-wrapper">
                 <input type="text" :value="item.name.startsWith('new') ? $t('budget.' + item.name) : item.name" @input="item.name = $event.target.value" class="solid-name-input necesidad" />
-                <button class="icon-delete-btn" @click="financeStore.removeSlider(item.id)" title="Eliminar gasto">
+                <button class="icon-delete-btn" @click="triggerDelete(item.id)" title="Eliminar gasto">
                   <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
                 </button>
               </div>
@@ -96,7 +96,7 @@
             <div class="slider-info">
               <div class="label-wrapper">
                 <input type="text" :value="item.name.startsWith('new') ? $t('budget.' + item.name) : item.name" @input="item.name = $event.target.value" class="solid-name-input deseo" />
-                <button class="icon-delete-btn" @click="financeStore.removeSlider(item.id)" title="Eliminar gasto">
+                <button class="icon-delete-btn" @click="triggerDelete(item.id)" title="Eliminar gasto">
                   <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
                 </button>
               </div>
@@ -127,7 +127,7 @@
       </div>
     </div>
 
-    <!-- ── CONFIRMATION MODAL ── -->
+    <!-- ── CONFIRMATION MODAL (SAVE) ── -->
     <ConfirmModal
       :show="showConfirmModal"
       title="Guardar Cambios"
@@ -135,6 +135,17 @@
       icon="💾"
       @confirm="onConfirmSave"
       @cancel="showConfirmModal = false"
+    />
+
+    <!-- ── CONFIRMATION MODAL (DELETE) ── -->
+    <ConfirmModal
+      :show="showDeleteModal"
+      title="Eliminar Gasto"
+      message="¿Estás seguro de que quieres eliminar este elemento de tu presupuesto?"
+      icon="🗑️"
+      confirmText="Eliminar"
+      @confirm="onConfirmDelete"
+      @cancel="showDeleteModal = false"
     />
   </div>
 </template>
@@ -150,6 +161,7 @@ const { t } = useI18n();
 
 const fixedItems = computed(() => financeStore.budgetItems.filter(i => i.locked));
 const variableItems = computed(() => financeStore.budgetItems.filter(i => !i.locked));
+
 const needsItems = computed(() => variableItems.value.filter(i => i.type === 'necesidad'));
 const desiresItems = computed(() => variableItems.value.filter(i => i.type === 'deseo'));
 
@@ -170,7 +182,10 @@ const getModelDesc = (id) => {
   return model ? t('models.' + model.key + '_desc') : '';
 };
 
+// MODALS STATE
 const showConfirmModal = ref(false);
+const showDeleteModal = ref(false);
+const itemToDelete = ref(null);
 
 const saveUpdates = () => {
   showConfirmModal.value = true;
@@ -183,6 +198,19 @@ const onConfirmSave = () => {
 
 const resetToDefault = () => {
   financeStore.resetToDefault();
+};
+
+const triggerDelete = (id) => {
+  itemToDelete.value = id;
+  showDeleteModal.value = true;
+};
+
+const onConfirmDelete = () => {
+  if (itemToDelete.value) {
+    financeStore.removeSlider(itemToDelete.value);
+    itemToDelete.value = null;
+  }
+  showDeleteModal.value = false;
 };
 </script>
 

@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
   password_hash VARCHAR(255) NOT NULL,
   name VARCHAR(255) DEFAULT NULL,
   net_monthly_income DECIMAL(10, 2) DEFAULT 0,
+  extra_income DECIMAL(10, 2) DEFAULT 0,
   fixed_loads DECIMAL(10, 2) DEFAULT 0,
   housing DECIMAL(10, 2) DEFAULT 0,
   utilities DECIMAL(10, 2) DEFAULT 0,

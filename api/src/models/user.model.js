@@ -20,10 +20,10 @@ class UserModel {
   }
 
   static async updateProfile(id, profileData) {
-    const { name, net_monthly_income, fixed_loads, housing, utilities, total_debt, has_emergency_fund, stable_job, planning_model, debt_strategy } = profileData;
+    const { name, net_monthly_income, extra_income, fixed_loads, housing, utilities, total_debt, has_emergency_fund, stable_job, planning_model, debt_strategy } = profileData;
     const [result] = await db.execute(
-      'UPDATE users SET name = ?, net_monthly_income = ?, fixed_loads = ?, housing = ?, utilities = ?, total_debt = ?, has_emergency_fund = ?, stable_job = ?, planning_model = ?, debt_strategy = ?, onboarding_completed = TRUE WHERE id = ?',
-      [name, net_monthly_income, fixed_loads, housing, utilities, total_debt, has_emergency_fund, stable_job, planning_model, debt_strategy || 'avalanche', id]
+      'UPDATE users SET name = ?, net_monthly_income = ?, extra_income = ?, fixed_loads = ?, housing = ?, utilities = ?, total_debt = ?, has_emergency_fund = ?, stable_job = ?, planning_model = ?, debt_strategy = ?, onboarding_completed = TRUE WHERE id = ?',
+      [name, net_monthly_income, extra_income || 0, fixed_loads, housing, utilities, total_debt, has_emergency_fund, stable_job, planning_model, debt_strategy || 'avalanche', id]
     );
     return result.affectedRows;
   }
