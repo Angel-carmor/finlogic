@@ -7,6 +7,7 @@ router.use(authMiddleware);
 
 router.get('/', InvestmentController.getInvestments);
 router.get('/search', InvestmentController.searchTicker);
+router.get('/news', InvestmentController.getNews);
 router.post('/', InvestmentController.addInvestment);
 router.delete('/:id', InvestmentController.removeInvestment);
 

@@ -58,6 +58,21 @@ CREATE TABLE IF NOT EXISTS user_investments (
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+-- Tabla de snapshots de presupuesto mensual
+CREATE TABLE IF NOT EXISTS monthly_budget_snapshots (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  user_id INT NOT NULL,
+  year INT NOT NULL,
+  month INT NOT NULL,
+  category VARCHAR(100) NOT NULL,
+  budget_limit DECIMAL(10, 2) NOT NULL,
+  category_type ENUM('necesidad', 'deseo') NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY unique_snapshot (user_id, year, month, category),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
 -- =========================================================================
 -- VOLCADO DE DATOS SEMILLA (SEED DATA) PARA PRUEBAS Y EVALUACIÓN
 -- =========================================================================
@@ -78,10 +93,21 @@ ON DUPLICATE KEY UPDATE id=id;
 -- 3. Inserción de Transacciones Semilla para el Usuario Demo (id: 1)
 INSERT INTO transactions (id, user_id, type, amount, description, category, date)
 VALUES 
-  (1, 1, 'income', 3000.00, 'Nómina Mensual', 'Salary', '2026-05-01'),
-  (2, 1, 'expense', 800.00, 'Alquiler Piso', 'Housing', '2026-05-02'),
-  (3, 1, 'expense', 150.00, 'Supermercado Mensual', 'Food', '2026-05-03'),
-  (4, 1, 'expense', 50.00, 'Factura de Luz', 'Utilities', '2026-05-04')
+  -- Mayo 2026
+  (1, 1, 'income',  3000.00, 'Nómina Mensual',          'Salary',    '2026-05-01'),
+  (2, 1, 'expense',  800.00, 'Alquiler Piso',            'Housing',   '2026-05-02'),
+  (3, 1, 'expense',  180.00, 'Supermercado Semanal',     'Food',      '2026-05-03'),
+  (4, 1, 'expense',   50.00, 'Factura de Luz',           'Utilities', '2026-05-04'),
+  (5, 1, 'expense',   60.00, 'Abono Transporte',         'Transport', '2026-05-05'),
+  (6, 1, 'expense',   95.00, 'Cena Restaurante',         'Leisure',   '2026-05-10'),
+  (7, 1, 'expense',  120.00, 'Supermercado Semanal 2',   'Food',      '2026-05-14'),
+  -- Abril 2026
+  (8, 1, 'income',  3000.00, 'Nómina Mensual Abril',     'Salary',    '2026-04-01'),
+  (9, 1, 'expense',  800.00, 'Alquiler Piso Abril',      'Housing',   '2026-04-02'),
+  (10,1, 'expense',  310.00, 'Supermercado Abril',       'Food',      '2026-04-05'),
+  (11,1, 'expense',  200.00, 'Suministros Abril',        'Utilities', '2026-04-06'),
+  (12,1, 'expense',   90.00, 'Transporte Abril',         'Transport', '2026-04-07'),
+  (13,1, 'expense',  185.00, 'Ocio Abril',               'Leisure',   '2026-04-15')
 ON DUPLICATE KEY UPDATE id=id;
 
 -- 4. Inserción de Inversiones Semilla para el Usuario Demo (id: 1)

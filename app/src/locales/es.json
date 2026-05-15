@@ -28,9 +28,9 @@
   },
   "kpi": {
     "health_index": "ÍNDICE DE SALUD FINANCIERA",
-    "health_tooltip": "Se calcula partiendo de 100 puntos y penaliza:<br>• <strong>Gastos fijos:</strong> penaliza si superan el 35%.<br>• <strong>Ahorro:</strong> penaliza si es menor al 20%.<br>• <strong>Deseos/Ocio:</strong> penaliza si superan el 30%.",
+    "health_tooltip": "Algoritmo de precisión basado en 4 vectores:<br>• <strong>Vivienda (35%):</strong> Penaliza linealmente si superas el 30% de esfuerzo.<br>• <strong>Ahorro (40%):</strong> Suma puntos por cada 1% ahorrado hasta el 20%.<br>• <strong>Ocio (15%):</strong> Control del gasto discrecional.<br>• <strong>Seguridad (10%):</strong> Bonus por fondo de emergencia y empleo estable.",
     "savings_capacity": "CAPACIDAD DE AHORRO",
-    "balance_title": "BALANCE OCIO VS AHORRO",
+    "balance_title": "BALANCE AHORRO VS OCIO",
     "balance_tooltip": "Compara visualmente qué peso tiene el ocio frente a tu ahorro. Lo ideal es que la parte verde (Ahorro) sea significativamente mayor que la amarilla (Ocio).",
     "savings_label": "AHORRO",
     "leisure_label": "OCIO"
@@ -57,16 +57,16 @@
     "free_mode": "Modo Libre",
     "free_desc": "Gestiona tu presupuesto libremente sin seguir ninguna métrica estricta.",
     "balance": "Equilibrio",
-    "balance_desc": "La clásica regla 50/30/20. Prioriza una vida equilibrada: disfrutar del presente asegurando un 20% para el futuro.",
+    "balance_desc": "(50/30/20) La clásica regla 50/30/20. Prioriza una vida equilibrada: disfrutar del presente asegurando un 20% para el futuro.",
     "accelerator": "Acelerador",
-    "accelerator_desc": "Foco extremo en ahorro/inversión (meta 50%). Exige reducir drásticamente los caprichos para lograr objetivos rápidos.",
+    "accelerator_desc": "(35/10/55) Máxima optimización para inversión y crecimiento.",
     "lifesaver": "Salvavidas",
-    "lifesaver_desc": "Modo supervivencia temporal. Elimina el ocio para recuperar liquidez y cubrir las necesidades vitales.",
-    "rescue": "Rescate",
-    "rescue_desc": "Modo de emergencia para liquidar deudas asfixiantes. Sacrificio total de deseos a favor de pagar obligaciones."
+    "lifesaver_desc": "(65/5/30) Enfoque en saneamiento y reducción de deuda.",
+    "contingencia": "Modelo de Contingencia",
+    "contingencia_desc": "(85/0/15) Prioridad máxima en cubrir necesidades básicas y reconstruir el fondo de reserva. Sacrificio total de deseos."
   },
   "mirror": {
-    "title": "ESPEJO A FUTURO (12 MESES)",
+    "title": "REPRESENTACIÓN EN PORCENTAJES",
     "tooltip": "Proyección lineal de tu ahorro mensual acumulado durante un año.",
     "months_cushion": "{months} MESES DE COLCHÓN",
     "cushion_desc": "Tu ahorro actual cubriría tus gastos durante este tiempo.",
@@ -95,6 +95,8 @@
     "save_changes": "Guardar Cambios",
     "saved_success": "Guardado correctamente",
     "chart_period": "Periodo de la gráfica",
+    "monthly_fee_total": "CUOTA MENSUAL TOTAL (DEUDAS)",
+    "btn_adjust": "Ajustar Cuotas",
     "empty_chart": "Añade deudas en el panel superior para ver la proyección",
     "timeline_title": "Línea de Tiempo de Hitos (Seguimiento Activo)",
     "timeline_empty": "Los hitos se generarán automáticamente cuando añadas deudas.",
@@ -115,10 +117,10 @@
     "balance": {
       "none": "Sin margen de ahorro ni ocio.",
       "critical": "Crítico: Gastas en ocio pero no logras ahorrar nada.",
-      "excellent": "Excelente: Priorizas tu ahorro muy por encima de tus caprichos.",
+      "excellent": "Excelente: Priorizas tu ahorro muy por encima de tus gastos en ocio.",
       "controlled": "Controlado: Destinas a ocio un equivalente al {ratio}% de lo que ahorras.",
       "warning": "Alerta: Tus gastos en ocio superan en un {overflow}% a tus ahorros.",
-      "danger": "Peligro: Tus caprichos multiplican por {multiplier} veces lo que ahorras."
+      "danger": "Peligro: Tus gastos en ocio multiplican por {multiplier} veces lo que ahorras."
     }
   },
   "financial_profile": {
@@ -157,15 +159,11 @@
     "portfolio_total": "TOTAL DEL PORTAFOLIO",
     "stocks": "ACCIONES",
     "crypto": "CRIPTO",
-    "cash": "EFECTIVO",
     "open_positions": "POSICIONES ABIERTAS",
     "invested": "INVERTIDO",
     "current_value": "VALOR ACTUAL",
     "var_24h": "VAR (24h)",
     "no_positions": "No tienes posiciones abiertas en este momento.",
-    "top_winners_losers": "TOP GANADORES/PERDEDORES",
-    "winners": "GANADORES",
-    "losers": "PERDEDORES",
     "add_position": "+ AÑADIR POSICIÓN",
     "ticker_symbol": "SÍMBOLO (TICKER)",
     "ph_ticker": "Ej: AAPL, SPY, BTC-USD",
@@ -174,5 +172,113 @@
     "capital_invested": "CAPITAL INVERTIDO (€)",
     "btn_add": "Comprar / Añadir",
     "btn_processing": "Procesando..."
+  },
+  "tracking": {
+    "title": "Seguimiento Mensual",
+    "subtitle": "Historial de cumplimiento de tu presupuesto",
+    "year": "Año",
+    "select_month": "Selecciona un mes para ver el detalle",
+    "status_closed": "Mes Cerrado",
+    "status_open": "Mes en Curso (Abierto)",
+    "no_data": "Sin datos registrados",
+    "btn_close_month": "Cerrar y Guardar Mes",
+    "btn_reopen": "Reabrir Mes",
+    "btn_closing": "Cerrando...",
+    "confirm_close": "¿Estás seguro de cerrar el mes? Se guardará una foto fija de tu presupuesto y gastos actuales.",
+    "executed": "Ejecutado",
+    "budget": "Presupuesto",
+    "spent": "Gastado",
+    "income_ref": "Ingresos Ref.",
+    "planned_savings": "Ahorro Planificado",
+    "total_debt_ref": "Deuda Total",
+    "total_budget_saved": "Presupuesto Guardado",
+    "actual_spent": "Gasto Real",
+    "available": "Disponible",
+    "exceeded": "Excedido",
+    "financial_health": "Salud Financiera (Distribución)",
+    "needs": "Necesidades",
+    "wants": "Deseos",
+    "savings": "Ahorro",
+    "live_draft": "Borrador en vivo",
+    "this_month": "Este Mes",
+    "prev_month": "Mes Anterior",
+    "category_breakdown": "Desglose por Categoría",
+    "comparison_prev": "Comparativa vs. Mes Anterior",
+    "variation": "Variación",
+    "total_expenses": "Total gastos",
+    "sync_hint": "Tu presupuesto del Dashboard se sincronizará automáticamente al cerrar el mes."
+  },
+  "tour": {
+    "dashboard": {
+      "welcome_title": "¡Bienvenido a FinLogic!",
+      "welcome_desc": "Tu viaje hacia la libertad financiera comienza aquí. Déjanos mostrarte cómo sacar el máximo provecho a tu nuevo centro de mando.",
+      "kpi_title": "Tus Métricas Clave",
+      "kpi_desc": "El pulso instantáneo de tus finanzas. Monitoriza tus ingresos, ahorro neto y el estado de tu salud financiera.",
+      "levers_title": "Palancas de Presupuesto",
+      "levers_desc": "¡Simulador interactivo! Mueve estas palancas para ver cómo tus decisiones de hoy impactan en tu futuro ahorro.",
+      "chart_title": "Distribución Mensual",
+      "chart_desc": "Visualiza a dónde va cada euro de tu presupuesto simulado: gastos fijos vs margen de ahorro.",
+      "debt_title": "Deudas e Inversiones",
+      "debt_desc": "Un resumen rápido de lo que tienes y lo que debes. Vigilamos el saldo de tus deudas y la valoración de tu cartera simultáneamente.",
+      "projection_title": "El Gráfico de Tijera",
+      "projection_desc": "La joya de la corona. Aquí verás el mes exacto en el que tus ahorros superarán a tus deudas.",
+      "next_analytics": "Siguiente Parada: Analíticas"
+    },
+    "analytics": {
+      "title": "Analíticas y Previsiones",
+      "desc": "Bienvenido a tu laboratorio financiero. Aquí proyectamos tu futuro basándonos en tus deudas y capacidad de ahorro.",
+      "fee_title": "Tu Carga Mensual",
+      "fee_desc": "Aquí ves el total de lo que pagas cada mes por tus deudas. Es el 'lastre' que intentaremos reducir con nuestra estrategia.",
+      "period_title": "Ventana de Tiempo",
+      "period_desc": "Ajusta este selector para ver cómo evolucionan tus finanzas a corto o largo plazo (desde 1 hasta 10 años).",
+      "chart_title": "Gráfico de Tijera Proyectado",
+      "chart_desc": "La intersección de estas líneas marca tu libertad financiera. La línea roja (deuda) bajando y la verde (ahorro) subiendo hasta cruzarse.",
+      "timeline_title": "Tu Línea de Tiempo",
+      "timeline_desc": "Un cronograma dinámico que te dice exactamente cuándo saldarás cada deuda y cuándo alcanzarás tu libertad financiera."
+    },
+    "investments": {
+      "title": "Tu Cartera de Activos",
+      "desc": "Vigila tus inversiones con datos en tiempo real de la bolsa y criptomonedas.",
+      "chart_title": "Diversificación",
+      "chart_desc": "Vigila el equilibrio entre tus acciones y criptoactivos para mantener una cartera saludable.",
+      "list_title": "Posiciones Abiertas",
+      "list_desc": "Aquí tienes el detalle de cada activo, su valor actual y su variación en las últimas 24 horas.",
+      "news_title": "Noticias del Mercado",
+      "news_desc": "Titulares en tiempo real relacionados con los activos que tienes en cartera."
+    },
+    "tracking": {
+      "title": "Seguimiento Mensual",
+      "desc": "Este es tu historial. Aquí ves cómo has cumplido tus metas mes a mes.",
+      "calendar_title": "Mapa de Calor Mensual",
+      "calendar_desc": "Cada tarjeta representa un mes. El color indica si fue un mes de ahorro (verde) o si hubo excesos (rojo).",
+      "kpi_title": "Resumen Mensual",
+      "kpi_desc": "Vigila tus ingresos reales, tu deuda en ese momento y el ahorro total que vas acumulando.",
+      "health_title": "Distribución Real",
+      "health_desc": "Aquí ves la 'foto' real de cómo gastaste tu dinero. Idealmente, la barra de ahorro debería ser la protagonista.",
+      "breakdown_title": "Desglose por Categorías",
+      "breakdown_desc": "Analiza partida a partida dónde se ha ido el dinero en el mes seleccionado."
+    },
+    "profile": {
+      "title": "Perfil Financiero",
+      "desc": "Este es el cerebro de FinLogic. Aquí configuras los datos base que alimentan todo el sistema.",
+      "income_title": "Tus Ingresos",
+      "income_desc": "Define tu nómina neta y cualquier ingreso extra regular que percibas.",
+      "expenses_title": "Gastos Fijos",
+      "expenses_desc": "Registra aquí tus gastos inevitables: vivienda, suministros, suscripciones...",
+      "debt_title": "Gestor de Deudas",
+      "debt_desc": "Añade tus préstamos con su interés y cuota. Es vital para que las analíticas sean precisas."
+    },
+    "finish": {
+      "title": "¡Todo Listo!",
+      "desc": "Ya conoces lo básico. Ahora es tu momento de tomar el control de tu futuro financiero."
+    },
+    "btn_next": "Siguiente",
+    "btn_prev": "Anterior",
+    "btn_done": "Finalizar",
+    "btn_skip": "Saltar Tour"
+  },
+  "topbar": {
+    "restart_tour": "Reiniciar Tour",
+    "restart_tour_tooltip": "Volver a mostrar la guía interactiva desde el principio"
   }
 }

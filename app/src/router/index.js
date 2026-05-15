@@ -11,6 +11,7 @@ const routes = [
   { path: '/register', component: Register, meta: { guest: true } },
   { path: '/dashboard', component: Dashboard, meta: { requiresAuth: true } },
   { path: '/analytics', component: () => import('../views/Analytics.vue'), meta: { requiresAuth: true } },
+  { path: '/tracking', component: () => import('../views/MonthlyTracking.vue'), meta: { requiresAuth: true } },
   { path: '/investments', component: () => import('../views/Investments.vue'), meta: { requiresAuth: true } },
   { path: '/onboarding', component: () => import('../views/Onboarding.vue'), meta: { requiresAuth: true } },
   { path: '/profile', component: () => import('../views/Profile.vue'), meta: { requiresAuth: true } },

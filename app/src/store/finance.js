@@ -35,6 +35,9 @@ export const useFinanceStore = defineStore('finance', {
     totalDebtComputed(state) {
       return Math.round(state.debts.reduce((sum, d) => sum + parseFloat(d.amount), 0));
     },
+    totalMonthlyDebtPayments(state) {
+      return state.debts.reduce((sum, d) => sum + (parseFloat(d.monthly_payment) || 0), 0);
+    },
     segments(state) {
       let needs = 0;
       let desires = 0;
@@ -57,45 +60,37 @@ export const useFinanceStore = defineStore('finance', {
       ].filter(s => s.percent >= 0);
     },
     isfScore(state) {
+      const authStore = useAuthStore();
+      const user = authStore.user;
+      const net = this.netIncome || 1;
+
+      // 1. Vector: Esfuerzo de Vivienda (Peso: 35%)
       const fixedExpenses = state.budgetItems
         .filter(i => i.id === 'housing' || i.id === 'utilities')
         .reduce((acc, i) => acc + i.amount, 0);
+      const fixedPct = (fixedExpenses / net) * 100;
+      let housingScore = 0;
+      if (fixedPct <= 30) housingScore = 35;
+      else if (fixedPct < 50) housingScore = 35 * (1 - (fixedPct - 30) / 20);
       
-      const net = this.netIncome || 1;
-      const fixedEffortPct = (fixedExpenses / net) * 100;
-      const savings = this.ahorroPct;
-      
-      const desires = state.budgetItems
-        .filter(i => i.type === 'deseo')
-        .reduce((acc, i) => acc + i.amount, 0);
+      // 2. Vector: Músculo de Ahorro (Peso: 40%)
+      const savingsPct = this.ahorroPct;
+      let savingsScore = Math.min(40, (savingsPct / 20) * 40);
+
+      // 3. Vector: Control de Ocio (Peso: 15%)
+      const desires = this.deseosAmount;
       const desiresPct = (desires / net) * 100;
+      let controlScore = 0;
+      if (desiresPct <= 20) controlScore = 15;
+      else if (desiresPct < 40) controlScore = 15 * (1 - (desiresPct - 20) / 20);
 
-      let score = 100; // Base score perfecto
+      // 4. Vector: Seguridad (Peso: 10%)
+      let safetyScore = 0;
+      if (user?.has_emergency_fund) safetyScore += 6;
+      if (user?.stable_job) safetyScore += 4;
 
-      // 1. Pilar de Capacidad de Supervivencia: Tasa de Esfuerzo (Housing Ratio)
-      if (fixedEffortPct > 50) {
-        score -= 35; // Estrés severo
-      } else if (fixedEffortPct > 35) {
-        score -= 15; // Riesgo moderado
-      }
-
-      // 2. Pilar de Liquidez: Tasa de Ahorro (Regla 50/30/20)
-      if (savings === 0) {
-        score -= 40;  // Quiebra inminente técnica ante imprevistos
-      } else if (savings < 10) {
-        score -= 20;  // Ahorro insuficiente para inflación / fondos
-      } else if (savings < 20) {
-        score -= 5;   // Mejorable (Sub-20)
-      }
-
-      // 3. Pilar Estructural: Gasto Discrecional (Ocio y extras hormonales)
-      if (desiresPct > 40) {
-        score -= 15; // Sobre-exposición grave a gasto de deseos
-      } else if (desiresPct > 30) {
-        score -= 5;  // Sobrepasando el umbral de la regla del 30%
-      }
-
-      return Math.max(0, Math.min(100, Math.round(score)));
+      const total = housingScore + savingsScore + controlScore + safetyScore;
+      return Math.max(0, Math.min(100, Math.round(total)));
     },
     isfLabel(state) {
       const score = this.isfScore;
@@ -157,10 +152,13 @@ export const useFinanceStore = defineStore('finance', {
         targetNeedsPct = 50; 
         targetDesiresPct = 30;
       } else if (this.currentModelId === 'acelerador') {
-        targetNeedsPct = 40; 
-        targetDesiresPct = 10;
-      } else if (this.currentModelId === 'salvavidas' || this.currentModelId === 'rescate') {
         targetNeedsPct = 35; 
+        targetDesiresPct = 10;
+      } else if (this.currentModelId === 'salvavidas') {
+        targetNeedsPct = 65; 
+        targetDesiresPct = 5; 
+      } else if (this.currentModelId === 'contingencia') {
+        targetNeedsPct = 85; 
         targetDesiresPct = 0; 
       } else {
         return null;
@@ -181,7 +179,10 @@ export const useFinanceStore = defineStore('finance', {
       } else if (this.currentModelId === 'acelerador') {
          let maxDesires = Math.max(0, remainingPct - 50);
          availableForDesiresPct = Math.min(targetDesiresPct, maxDesires);
-      } else if (this.currentModelId === 'salvavidas' || this.currentModelId === 'rescate') {
+      } else if (this.currentModelId === 'salvavidas') {
+         let maxDesires = Math.max(0, remainingPct - 15);
+         availableForDesiresPct = Math.min(targetDesiresPct, maxDesires);
+      } else if (this.currentModelId === 'contingencia') {
          availableForDesiresPct = 0;
       }
 
@@ -222,7 +223,9 @@ export const useFinanceStore = defineStore('finance', {
       } else {
         this.resetToDefault();
       }
-      this.currentModelId = authStore.user?.planning_model || 'equilibrio';
+      let model = authStore.user?.planning_model || 'equilibrio';
+      if (model === 'rescate' || model === 'escudo') model = 'contingencia';
+      this.currentModelId = model;
     },
     saveToLocal() {
       const authStore = useAuthStore();
@@ -276,6 +279,10 @@ export const useFinanceStore = defineStore('finance', {
     },
     setDebts(debts) {
       this.debts = debts;
+    },
+    async fetchDebts() {
+      const { data } = await import('../services/api').then(m => m.default.get('/debts'));
+      this.debts = data.debts || [];
     }
   }
 });

@@ -1,8 +1,13 @@
 <template>
   <div class="panel projection-panel" id="tour-projection">
     <h3 class="with-icon">
-      <svg viewBox="0 0 24 24" class="icon"><path fill="currentColor" d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
-      {{ $t('analytics.scissors_chart') }}
+      <div class="title-left">
+        <svg viewBox="0 0 24 24" class="icon"><path fill="currentColor" d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+        {{ $t('analytics.scissors_chart') }}
+      </div>
+      <router-link to="/analytics" class="manage-link" title="Ver Analítica">
+        <svg viewBox="0 0 24 24" class="m-icon"><path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+      </router-link>
     </h3>
     
     <div class="financial-chart-box">
@@ -47,8 +52,7 @@ const chartOptions = ref({
 
 function recalcChart() {
   const total = financeStore.totalDebtComputed || 0;
-  
-  const monthlyDebtPayment = total > 0 ? Math.max(10, financeStore.ahorroAmount * 0.5) : 0;
+  const monthlyDebtPayment = financeStore.totalMonthlyDebtPayments || 0;
   const monthlySavings = Math.max(0, financeStore.ahorroAmount - monthlyDebtPayment);
   
   const labels = [];
@@ -105,8 +109,20 @@ onMounted(() => {
 
 <style scoped>
 .panel { background: var(--bg-panel); border-radius: 12px; padding: 1.5rem; border: 1px solid var(--border-color); box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
-.with-icon { display: flex; align-items: center; gap: 0.5rem; margin: 0 0 1.5rem 0; font-size: 0.8rem; color: var(--text-muted); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+.with-icon { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin: 0 0 1.5rem 0; font-size: 0.8rem; color: var(--text-muted); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+.title-left { display: flex; align-items: center; gap: 0.5rem; }
 .with-icon .icon { width: 16px; height: 16px; color: var(--color-primary); }
+.manage-link {
+  color: var(--text-muted);
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+}
+.manage-link:hover {
+  color: var(--color-primary);
+  transform: scale(1.1);
+}
+.m-icon { width: 16px; height: 16px; }
 
 .financial-chart-box { width: 100%; height: 300px; margin-top: 1rem; }
 </style>

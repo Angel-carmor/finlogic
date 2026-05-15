@@ -1,20 +1,40 @@
 <template>
   <div class="dashboard-layout">
-    <Sidebar />
     <main class="main-content">
-      <TourGuide page="investments" />
+      <TourGuide page="investments" storageName="tour_seen_investments" />
       <Topbar />
 
       <div class="dashboard-container">
-        <!-- Header Section -->
-        <div class="top-section panel" id="tour-investments-header">
-          <div class="portfolio-info">
-            <h2 class="title">{{ $t('investments_page.portfolio_total') }}</h2>
-            <div class="kpi-val green-text">
-              {{ totalMarketValue >= totalInvested ? '' : '' }}€ {{ totalMarketValue.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+        <!-- Unified Header -->
+        <div class="unified-header" id="tour-investments-header">
+          <h1 class="title">{{ $t('investments_page.portfolio_total') }}</h1>
+          <p class="subtitle">HUD_PORTFOLIO: ACTIVE // REAL-TIME TRACKING // {{ investments.length }} {{ $t('investments_page.open_positions') }}</p>
+        </div>
+
+        <!-- Master Portfolio Panel -->
+        <div class="top-section panel" id="tour-investments-master">
+          <div class="portfolio-main">
+            <div class="portfolio-label">
+              <span class="status-dot pulse"></span>
+              {{ $t('investments_page.portfolio_total') }}
             </div>
-            <div class="kpi-var" :class="totalChange >= 0 ? 'green-text' : 'red-text'">
-              {{ totalChange >= 0 ? '+' : '' }}€{{ totalChange.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} ({{ totalChangePercent.toFixed(2) }}%)
+            <div class="kpi-row">
+              <div class="kpi-val" :class="totalChange >= 0 ? 'green-text glow-green' : 'red-text glow-red'">
+                €{{ totalMarketValue.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+              </div>
+              <div class="kpi-badge" :class="totalChange >= 0 ? 'bg-green' : 'bg-red'">
+                <svg v-if="totalChange >= 0" viewBox="0 0 24 24" class="badge-icon"><path fill="currentColor" d="M7 14l5-5 5 5H7z"/></svg>
+                <svg v-else viewBox="0 0 24 24" class="badge-icon"><path fill="currentColor" d="M7 10l5 5 5-5H7z"/></svg>
+                <span>{{ totalChangePercent.toFixed(2) }}%</span>
+                <span class="var-money">({{ totalChange >= 0 ? '+' : '' }}€{{ Math.abs(totalChange).toLocaleString('es-ES') }})</span>
+              </div>
+            </div>
+            <div class="portfolio-meta">
+              <span>VOLATILITY: LOW</span>
+              <span class="divider">|</span>
+              <span>CURRENCY: EUR</span>
+              <span class="divider">|</span>
+              <span>LAST SYNC: JUST NOW</span>
             </div>
           </div>
           
@@ -23,9 +43,8 @@
               <apexchart type="donut" height="150" :options="chartOptions" :series="chartSeries"></apexchart>
             </div>
             <div class="chart-legend">
-              <div class="legend-item"><span class="dot" style="background: #3b82f6;"></span> {{ $t('investments_page.stocks') }}<br/><strong>{{ (chartSeries[0] / totalMarketValue * 100).toFixed(0) || 0 }}%</strong></div>
-              <div class="legend-item"><span class="dot" style="background: #00C805;"></span> {{ $t('investments_page.crypto') }}<br/><strong>{{ (chartSeries[1] / totalMarketValue * 100).toFixed(0) || 0 }}%</strong></div>
-              <div class="legend-item"><span class="dot" style="background: #9E9E9E;"></span> {{ $t('investments_page.cash') }}<br/><strong>0%</strong></div>
+              <div class="legend-item"><span class="dot" style="background: #3b82f6;"></span> {{ $t('investments_page.stocks') }}<br/><strong>{{ totalMarketValue > 0 ? (chartSeries[0] / totalMarketValue * 100).toFixed(0) : 0 }}%</strong></div>
+              <div class="legend-item"><span class="dot" style="background: #00C805;"></span> {{ $t('investments_page.crypto') }}<br/><strong>{{ totalMarketValue > 0 ? (chartSeries[1] / totalMarketValue * 100).toFixed(0) : 0 }}%</strong></div>
             </div>
           </div>
         </div>
@@ -84,32 +103,7 @@
             </div>
           </div>
 
-          <!-- Columna Derecha -->
           <div class="right-col">
-            <!-- Top Ganadores / Perdedores -->
-            <div class="panel winners-losers">
-              <h3 class="section-title">
-                <svg viewBox="0 0 24 24" class="icon"><path fill="currentColor" d="M3.5 18.5l6-6 4 4L22 6.92 20.59 5.5l-7.09 7.09-4-4L2 17.08z"/></svg>
-                {{ $t('investments_page.top_winners_losers') }}
-              </h3>
-              
-              <div class="tabs">
-                <div class="tab active">{{ $t('investments_page.winners') }}</div>
-                <div class="tab">{{ $t('investments_page.losers') }}</div>
-              </div>
-              
-              <div class="top-list">
-                <div class="top-item" v-for="inv in topGainers" :key="inv.id">
-                  <span>{{ inv.name }} ({{ inv.ticker }})</span>
-                  <span class="green-text">+{{ inv.marketData.changePercent.toFixed(2) }}%</span>
-                </div>
-                <div class="top-item" v-for="inv in topLosers" :key="inv.id">
-                  <span>{{ inv.name }} ({{ inv.ticker }})</span>
-                  <span class="red-text">{{ inv.marketData.changePercent.toFixed(2) }}%</span>
-                </div>
-              </div>
-            </div>
-
             <!-- Formulario de Inversión -->
             <div class="panel add-panel" id="tour-investments-add">
               <h3 class="section-title" style="color: #3b82f6;">
@@ -147,12 +141,43 @@
                 </div>
               </div>
             </div>
+          </div>
+        </div>
 
+        <!-- Noticias en Tiempo Real (Ancho Completo) -->
+        <div class="news-section-full" v-if="news.length > 0 || loadingNews">
+          <h3 class="section-title">
+            <svg viewBox="0 0 24 24" class="icon"><path fill="currentColor" d="M20 5H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 12H4V7h16v10zM5 9h5v2H5V9zm10 0h4v2h-4V9zm-10 4h9v2H5v-2zm11 0h3v2h-3v-2z"/></svg>
+            NOTICIAS DEL MERCADO Y PORTAFOLIO
+          </h3>
+          
+          <div class="news-grid" v-if="news.length > 0">
+            <a :href="item.link" target="_blank" class="news-card panel" v-for="item in news" :key="item.uuid">
+              <div class="news-meta">
+                <span class="news-source">{{ item.publisher }}</span>
+                <span class="news-time">{{ formatTime(item.providerPublishTime) }}</span>
+              </div>
+              <div class="news-title">{{ item.title }}</div>
+            </a>
+          </div>
+          <div class="news-empty-full panel" v-else-if="loadingNews">
+            <div class="loading-news-spinner"></div>
+            Cargando el flujo de noticias en tiempo real...
           </div>
         </div>
 
       </div>
     </main>
+
+    <!-- ── CONFIRMATION MODAL ── -->
+    <ConfirmModal
+      :show="showConfirmModal"
+      title="Cerrar Posición"
+      message="¿Estás seguro de que quieres cerrar esta posición? Esta acción eliminará el activo de tu cartera."
+      icon="🗑️"
+      @confirm="onConfirmRemove"
+      @cancel="showConfirmModal = false"
+    />
   </div>
 </template>
 
@@ -161,10 +186,10 @@ import { ref, reactive, computed, onMounted } from 'vue';
 import { useAuthStore } from '../store/auth';
 import { useI18n } from 'vue-i18n';
 import api from '../services/api';
-import Sidebar from '../components/layout/Sidebar.vue';
 import Topbar from '../components/layout/Topbar.vue';
 import VueApexCharts from 'vue3-apexcharts';
 import TourGuide from '../components/TourGuide.vue';
+import ConfirmModal from '../components/common/ConfirmModal.vue';
 
 const apexchart = VueApexCharts;
 
@@ -173,10 +198,14 @@ const { t } = useI18n();
 const user = authStore.user || {};
 
 const investments = ref([]);
+const news = ref([]);
 const loading = ref(false);
+const loadingNews = ref(false);
 const errorMsg = ref('');
 const searchResults = ref([]);
 const showDropdown = ref(false);
+const showConfirmModal = ref(false);
+const investmentToDelete = ref(null);
 let searchTimeout = null;
 
 const newInvestment = reactive({
@@ -186,6 +215,12 @@ const newInvestment = reactive({
   annual_return: 0,
   monthly_contribution: 0
 });
+
+const formatTime = (timestamp) => {
+  if (!timestamp) return '';
+  const date = new Date(timestamp * 1000);
+  return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+};
 
 // Helpers
 const isCrypto = (ticker) => {
@@ -244,21 +279,6 @@ const chartOptions = {
     theme: 'dark'
   }
 };
-
-// Top Gainers / Losers
-const topGainers = computed(() => {
-  return investments.value
-    .filter(inv => inv.marketData && inv.marketData.changePercent > 0)
-    .sort((a, b) => b.marketData.changePercent - a.marketData.changePercent)
-    .slice(0, 3);
-});
-
-const topLosers = computed(() => {
-  return investments.value
-    .filter(inv => inv.marketData && inv.marketData.changePercent < 0)
-    .sort((a, b) => a.marketData.changePercent - b.marketData.changePercent)
-    .slice(0, 3);
-});
 
 // API Calls
 const fetchInvestments = async () => {
@@ -323,8 +343,17 @@ const addInvestment = async () => {
   }
 };
 
-const removeInvestment = async (id) => {
+const removeInvestment = (id) => {
+  investmentToDelete.value = id;
+  showConfirmModal.value = true;
+};
+
+const onConfirmRemove = async () => {
+  const id = investmentToDelete.value;
+  if (!id) return;
+  
   loading.value = true;
+  showConfirmModal.value = false;
   try {
     await api.delete(`/investments/${id}`);
     await fetchInvestments();
@@ -332,29 +361,85 @@ const removeInvestment = async (id) => {
     errorMsg.value = 'Error al eliminar.';
   } finally {
     loading.value = false;
+    investmentToDelete.value = null;
+  }
+};
+
+const fetchNews = async () => {
+  loadingNews.value = true;
+  try {
+    const { data } = await api.get('/investments/news');
+    news.value = data.news || [];
+  } catch (e) {
+    console.error('Error fetching news', e);
+  } finally {
+    loadingNews.value = false;
   }
 };
 
 onMounted(() => {
   fetchInvestments();
+  fetchNews();
 });
 </script>
 
 <style scoped>
-.dashboard-layout { display: flex; height: 100vh; background-color: var(--bg-base); font-family: 'Inter', sans-serif; color: var(--text-main); }
-.main-content { flex: 1; padding: 2rem; overflow-y: auto; background: var(--bg-base); }
-.dashboard-container { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.5rem; }
+.dashboard-layout { min-height: 100vh; font-family: 'Inter', sans-serif; color: var(--text-main); }
+.main-content { padding-top: 140px; padding-bottom: 4rem; width: 100%; }
+.dashboard-container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; display: flex; flex-direction: column; gap: 2.5rem; }
 
-.panel { background: var(--bg-panel); border-radius: 12px; padding: 1.5rem; border: 1px solid var(--border-color); box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+.panel { background: var(--bg-panel); backdrop-filter: blur(var(--glass-blur)); border-radius: 12px; padding: 1.5rem; border: 1px solid var(--border-color); box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
 
 /* Top Section */
 .top-section { display: flex; justify-content: space-between; align-items: center; }
 .portfolio-info { flex: 1; }
-.portfolio-info .title { font-size: 1.8rem; font-weight: 800; margin: 0 0 0.5rem 0; color: #ffffff; letter-spacing: -0.5px; }
-.kpi-val { font-size: 3rem; font-weight: 800; font-family: monospace; line-height: 1; margin-bottom: 0.5rem; }
-.kpi-var { font-size: 1.2rem; font-family: monospace; font-weight: 600; }
+.portfolio-main { flex: 1; display: flex; flex-direction: column; gap: 0.5rem; }
+.portfolio-label { font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem; }
 
-.portfolio-chart { display: flex; align-items: center; gap: 1.5rem; }
+.status-dot { width: 8px; height: 8px; border-radius: 50%; background: #00C805; box-shadow: 0 0 10px #00C805; }
+.pulse { animation: pulse-green 2s infinite; }
+@keyframes pulse-green {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 200, 5, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(0, 200, 5, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 200, 5, 0); }
+}
+
+.kpi-row { display: flex; align-items: center; gap: 1.8rem; }
+.kpi-val { font-size: 3.5rem; font-weight: 900; line-height: 1; margin: 0; letter-spacing: -2px; transition: all 0.5s ease; }
+
+.glow-green { text-shadow: 0 0 30px rgba(0, 200, 5, 0.4); }
+.glow-red { text-shadow: 0 0 30px rgba(255, 77, 79, 0.4); }
+
+.portfolio-meta { 
+  display: flex; 
+  align-items: center; 
+  gap: 1rem; 
+  margin-top: 1rem; 
+  font-family: monospace; 
+  font-size: 0.7rem; 
+  color: var(--text-muted); 
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.portfolio-meta .divider { opacity: 0.2; }
+
+.kpi-badge { 
+  display: flex; 
+  align-items: center; 
+  gap: 0.5rem; 
+  padding: 0.5rem 1rem; 
+  border-radius: 12px; 
+  font-family: monospace; 
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+.bg-green { background: rgba(0, 200, 5, 0.15); color: #00C805; border: 1px solid rgba(0, 200, 5, 0.2); }
+.bg-red { background: rgba(255, 77, 79, 0.15); color: #ff4d4f; border: 1px solid rgba(255, 77, 79, 0.2); }
+
+.badge-icon { width: 20px; height: 20px; }
+.var-money { font-size: 0.85rem; opacity: 0.8; font-weight: 600; }
+
+.portfolio-chart { display: flex; align-items: center; gap: 2rem; border-left: 1px solid rgba(255,255,255,0.05); padding-left: 2rem; }
 .chart-wrapper { width: 150px; height: 150px; }
 .chart-legend { display: flex; flex-direction: column; gap: 0.8rem; }
 .legend-item { font-size: 0.75rem; color: var(--text-muted); letter-spacing: 1px; }
@@ -395,14 +480,46 @@ onMounted(() => {
 .top-item:last-child { border-bottom: none; }
 
 /* Right Col: Add Form */
-.add-panel { margin-top: 1.5rem; }
+/* News Full Width Section */
+.news-section-full { margin-top: 1rem; }
+.news-grid { 
+  display: grid; 
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
+  gap: 1rem; 
+}
+.news-card { 
+  padding: 1.2rem; 
+  transition: all 0.3s ease; 
+  border: 1px solid var(--border-color);
+  background: rgba(255,255,255,0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  text-decoration: none;
+}
+.news-card:hover { 
+  transform: translateY(-5px); 
+  border-color: var(--color-primary);
+  background: rgba(59, 130, 246, 0.05);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+}
+.news-meta { display: flex; justify-content: space-between; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.5px; }
+.news-source { color: var(--color-primary); text-transform: uppercase; }
+.news-time { color: var(--text-muted); }
+.news-title { color: #fff; font-size: 0.95rem; font-weight: 600; line-height: 1.5; }
+
+.news-empty-full { padding: 3rem; text-align: center; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+.loading-news-spinner { width: 30px; height: 30px; border: 3px solid rgba(255,255,255,0.1); border-top-color: var(--color-primary); border-radius: 50%; animation: spin 1s linear infinite; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
 .add-form { display: flex; flex-direction: column; gap: 1rem; }
 .field-group { display: flex; flex-direction: column; gap: 0.4rem; }
 .field-label { font-size: 0.7rem; color: var(--text-muted); font-weight: 700; letter-spacing: 1px; }
-.field-input { background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.8rem; color: #fff; font-family: 'Inter', sans-serif; font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
+.field-input { width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.8rem; color: #fff; font-family: 'Inter', sans-serif; font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
 .field-input:focus { border-color: var(--color-primary); }
 
-.currency-wrap { position: relative; display: flex; align-items: center; }
+.currency-wrap { position: relative; display: flex; align-items: center; width: 100%; }
 .currency-wrap::before { content: "€"; position: absolute; left: 0.8rem; color: var(--text-muted); font-weight: 600; }
 .currency-input { width: 100%; padding-left: 1.8rem; }
 
@@ -419,9 +536,9 @@ onMounted(() => {
 .ac-name { color: var(--text-main); font-size: 0.85rem; }
 
 /* Global colors */
-.green-text { color: var(--color-success); }
-.red-text { color: var(--color-danger); }
-.blue-text { color: var(--color-primary); }
+.green-text { color: var(--color-success) !important; }
+.red-text { color: var(--color-danger) !important; }
+.blue-text { color: var(--color-primary) !important; }
 
 @media (max-width: 1000px) {
   .middle-blocks { grid-template-columns: 1fr; }

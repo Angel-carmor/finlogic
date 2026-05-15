@@ -5,64 +5,96 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --bg-base: #12121e;
-  --bg-panel: #1e1e2f;
-  --border-color: #2a2a40;
-  --color-primary: #3b82f6;
-  --color-success: #00C805;
-  --color-danger: #FF6B6B;
-  --text-main: #E0E0E0;
-  --text-muted: #9E9E9E;
+  --bg-base: #0f172a;
+  /* Midnight Blue Base */
+  --bg-panel: rgba(25, 25, 45, 0.45);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --color-primary: #494beb;
+  --color-success: #10b981;
+  --color-danger: #f43f5e;
+  --text-main: #FFFFFF;
+  --text-muted: #9494b8;
+  --glass-blur: 25px;
 }
 
-* {
-  box-sizing: border-box;
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  width: 100%;
+  font-family: 'Inter', sans-serif;
+  color: var(--text-main);
+  /* Static gradient for stability */
+  background: linear-gradient(180deg, #172554 0%, #0f172a 60%, #000000 100%) !important;
+  background-attachment: fixed !important;
 }
 
 body {
-  margin: 0;
-  font-family: 'Inter', sans-serif;
-  background: var(--bg-base);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* GPU-Accelerated Dynamic Nebula */
+body::before {
+  content: "";
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.12) 0%, transparent 40%),
+    radial-gradient(circle at 80% 80%, rgba(79, 70, 229, 0.2) 0%, transparent 50%);
+  pointer-events: none;
+  /* Hardware acceleration */
+  will-change: transform;
+  animation: nebulaDrift 30s ease-in-out infinite alternate;
+}
+
+@keyframes nebulaDrift {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(5%, 2%) scale(1.1); }
+  100% { transform: translate(-2%, 5%) scale(1); }
+}
+
+
+
+
+
+
+/* ── Layout ── */
+
+.app-layout {
+  display: flex;
+  min-height: 100vh;
   color: var(--text-main);
 }
 
-/* ── Layout ── */
-.app-layout {
-  display: flex;
-  height: 100vh;
-  background-color: var(--bg-base);
-  font-family: 'Inter', sans-serif;
-  color: var(--text-main);
-}
 
 .app-main {
   flex: 1;
   padding: 2rem;
   overflow-y: auto;
-  background: var(--bg-base);
 }
-
-.app-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-/* ── Global Utility Classes ── */
-.green-text { color: var(--color-success) !important; }
-.red-text { color: var(--color-danger) !important; }
-.blue-text { color: var(--color-primary) !important; }
 
 /* ── Panels ── */
 .panel {
   background: var(--bg-panel);
-  border-radius: 12px;
-  padding: 1.5rem 2rem;
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-radius: 20px;
+  padding: 2rem;
   border: 1px solid var(--border-color);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease, border-color 0.3s ease;
 }
+
+.panel:hover {
+  border-color: rgba(0, 82, 255, 0.2);
+}
+
 
 .panel-title {
   margin: 0 0 1.5rem 0;
@@ -109,6 +141,7 @@ body {
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .field-input:focus {
@@ -122,11 +155,16 @@ body {
 }
 
 .field-input.currency-input {
-  padding-left: 2rem;
+  padding-left: 2.2rem;
+}
+
+.field-input.percent-input {
+  padding-right: 2.2rem;
 }
 
 .currency-wrap {
   position: relative;
+  width: 100%;
 }
 
 .currency-symbol {
@@ -203,8 +241,35 @@ body {
 }
 
 /* ── Neon accents ── */
-.neon { color: var(--color-primary); }
-.neon-glow { text-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+.neon {
+  color: var(--color-primary);
+}
+
+.neon-glow {
+  text-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+}
+
+/* ── Unified Page Header ── */
+.unified-header {
+  margin-bottom: 2rem;
+}
+
+.unified-header .title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin: 0;
+  color: var(--text-main);
+  letter-spacing: -1px;
+}
+
+.unified-header .subtitle {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 600;
+}
 
 /* ── Divider ── */
 .section-divider {
@@ -212,4 +277,3 @@ body {
   background: var(--border-color);
   margin: 1.5rem 0;
 }
-

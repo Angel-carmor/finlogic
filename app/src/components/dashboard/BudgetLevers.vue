@@ -83,7 +83,7 @@
               </div>
               <div class="values amount-input-wrapper">
                 <input type="number" class="amount-input neon-text" :value="item.amount" @input="financeStore.handleSliderInput(item, parseInt($event.target.value) || 0); $event.target.value = item.amount" min="0" />
-                <span class="currency-symbol neon-text">€</span>
+                <span class="currency-symbol">€</span>
               </div>
             </div>
             <input type="range" min="0" :max="financeStore.netIncome" :value="item.amount" @input="financeStore.handleSliderInput(item, parseInt($event.target.value) || 0); $event.target.value = item.amount" class="cyber-slider need-slider" :style="{ '--val': (financeStore.netIncome ? (item.amount / financeStore.netIncome) * 100 : 0) + '%' }" />
@@ -102,7 +102,7 @@
               </div>
               <div class="values amount-input-wrapper">
                 <input type="number" class="amount-input neon-text" :value="item.amount" @input="financeStore.handleSliderInput(item, parseInt($event.target.value) || 0); $event.target.value = item.amount" min="0" />
-                <span class="currency-symbol neon-text">€</span>
+                <span class="currency-symbol">€</span>
               </div>
             </div>
             <input type="range" min="0" :max="financeStore.netIncome" :value="item.amount" @input="financeStore.handleSliderInput(item, parseInt($event.target.value) || 0); $event.target.value = item.amount" class="cyber-slider desire-slider" :style="{ '--val': (financeStore.netIncome ? (item.amount / financeStore.netIncome) * 100 : 0) + '%' }" />
@@ -126,13 +126,24 @@
         </div>
       </div>
     </div>
+
+    <!-- ── CONFIRMATION MODAL ── -->
+    <ConfirmModal
+      :show="showConfirmModal"
+      title="Guardar Cambios"
+      message="¿Estás seguro de que quieres guardar la configuración actual de tu presupuesto?"
+      icon="💾"
+      @confirm="onConfirmSave"
+      @cancel="showConfirmModal = false"
+    />
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useFinanceStore } from '../../store/finance';
 import { useI18n } from 'vue-i18n';
+import ConfirmModal from '../common/ConfirmModal.vue';
 
 const financeStore = useFinanceStore();
 const { t } = useI18n();
@@ -147,7 +158,7 @@ const styleModels = [
   { id: 'equilibrio', key: 'balance' },
   { id: 'acelerador', key: 'accelerator' },
   { id: 'salvavidas', key: 'lifesaver' },
-  { id: 'rescate', key: 'rescue' }
+  { id: 'contingencia', key: 'contingencia' }
 ];
 
 const getModelName = (id) => {
@@ -159,9 +170,15 @@ const getModelDesc = (id) => {
   return model ? t('models.' + model.key + '_desc') : '';
 };
 
+const showConfirmModal = ref(false);
+
 const saveUpdates = () => {
+  showConfirmModal.value = true;
+};
+
+const onConfirmSave = () => {
   financeStore.saveToLocal();
-  alert(t('budget.save_updates'));
+  showConfirmModal.value = false;
 };
 
 const resetToDefault = () => {
@@ -214,7 +231,7 @@ const resetToDefault = () => {
 .amount-input:disabled { background: transparent; border-color: transparent; padding-right: 0; color: var(--text-main); }
 .amount-input::-webkit-inner-spin-button, .amount-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 .amount-input[type=number] { -moz-appearance: textfield; appearance: textfield; }
-.currency-symbol { color: var(--text-muted); font-weight: 700; font-family: monospace; font-size: 1.15rem; }
+.currency-symbol { color: var(--text-muted); font-weight: 700; font-family: monospace; font-size: 1.15rem; position: static; }
 .neon-text { color: var(--color-success); text-shadow: 0 0 5px rgba(0,200,5,0.3); }
 
 .cyber-slider { -webkit-appearance: none; width: 100%; height: 6px; background: linear-gradient(to right, var(--color-success) var(--val, 0%), var(--bg-base) var(--val, 0%)); border-radius: 3px; outline: none; }

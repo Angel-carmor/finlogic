@@ -64,6 +64,44 @@ class DebtController {
       return res.status(500).json({ error: 'Internal server error while removing debt' });
     }
   }
+
+  static async updateDebt(req, res) {
+    try {
+      const userId = req.user.id;
+      const { id } = req.params;
+      const { name, amount, interest_rate, monthly_payment } = req.body;
+
+      console.log('DEBUG: Updating debt:', { id, userId, name, amount, interest_rate, monthly_payment });
+
+      if (!name || amount === undefined || amount < 0) {
+        return res.status(400).json({ error: 'Name and a valid amount are required' });
+      }
+
+      const affected = await DebtModel.update(
+        id, 
+        userId, 
+        name, 
+        parseFloat(amount), 
+        parseFloat(interest_rate) || 0, 
+        parseFloat(monthly_payment) || 0
+      );
+
+      // We don't return 404 if 0 rows affected, because it could mean no values changed.
+      // We only return 404 if we are sure the ID doesn't exist (handled by the DB or a check).
+      
+      const debts = await DebtModel.getAllByUserId(userId);
+      const updatedUser = await UserModel.findById(userId);
+
+      return res.status(200).json({
+        message: 'Debt updated successfully',
+        debts,
+        total_debt: parseFloat(updatedUser.total_debt) || 0
+      });
+    } catch (error) {
+      console.error('CRITICAL ERROR updating debt:', error);
+      return res.status(500).json({ error: 'Internal server error while updating debt' });
+    }
+  }
 }
 
 module.exports = DebtController;

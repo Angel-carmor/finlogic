@@ -1,6 +1,5 @@
 <template>
   <div class="app-layout">
-    <Sidebar />
     <main class="app-main">
       <Topbar />
       <div class="app-container">
@@ -83,10 +82,7 @@
             <p class="session-hint">{{ $t('profile.language_hint') }}</p>
             <div class="field-group">
               <label class="field-label">{{ $t('profile.select_language') }}</label>
-              <select class="field-input language-select" v-model="currentLocale" @change="changeLanguage">
-                <option value="es">Español</option>
-                <option value="en">English</option>
-              </select>
+              <LanguageSelector v-model="currentLocale" @change="changeLanguage" />
             </div>
           </div>
 
@@ -101,8 +97,8 @@ import { ref, reactive, computed } from 'vue';
 import { useAuthStore } from '../store/auth';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
-import Sidebar from '../components/layout/Sidebar.vue';
 import Topbar from '../components/layout/Topbar.vue';
+import LanguageSelector from '../components/common/LanguageSelector.vue';
 
 const { locale } = useI18n();
 const authStore = useAuthStore();
@@ -140,6 +136,10 @@ const switchAccount = () => { authStore.logout(); router.push('/login'); };
 </script>
 
 <style scoped>
+.app-layout { min-height: 100vh; font-family: 'Inter', sans-serif; color: var(--text-main); }
+.app-main { padding-top: 140px; padding-bottom: 4rem; width: 100%; }
+.app-container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; display: flex; flex-direction: column; gap: 2.5rem; }
+
 .page-header { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem; }
 .avatar-big { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, #1c2a40, #1A1A2E); border: 2px solid #0052FF; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 0 20px rgba(0,82,255,0.2); }
 .avatar-initials { font-size: 1.6rem; font-weight: 800; color: #0052FF; }
@@ -153,7 +153,7 @@ const switchAccount = () => { authStore.logout(); router.push('/login'); };
 .session-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
 .language-select {
   cursor: pointer;
-  background-color: var(--bg-base);
+  background-color: rgba(0,0,0,0.2);
   color: var(--text-main);
   border: 1px solid var(--border-color);
   padding: 0.8rem;

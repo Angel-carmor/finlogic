@@ -7,6 +7,7 @@ router.use(authMiddleware);
 
 router.get('/', DebtController.getDebts);
 router.post('/', DebtController.addDebt);
+router.put('/:id', DebtController.updateDebt);
 router.delete('/:id', DebtController.removeDebt);
 
 module.exports = router;
