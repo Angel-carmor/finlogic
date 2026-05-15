@@ -4,9 +4,11 @@ class UserController {
   static async updateProfile(req, res) {
     try {
       const userId = req.user.id;
-      const { net_monthly_income, housing, utilities, has_emergency_fund, stable_job, planning_model, total_debt, debt_strategy } = req.body;
+      const { name, net_monthly_income, housing, utilities, has_emergency_fund, stable_job, planning_model, total_debt, debt_strategy } = req.body;
       
+      const currentUser = await UserModel.findById(userId);
       const profileData = {
+        name: name || currentUser.name,
         net_monthly_income: parseFloat(net_monthly_income) || 0,
         housing: parseFloat(housing) || 0,
         utilities: parseFloat(utilities) || 0,
