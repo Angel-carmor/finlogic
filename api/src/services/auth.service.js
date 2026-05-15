@@ -16,13 +16,14 @@ class AuthService {
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
 
-    // Create user
-    const userId = await UserModel.create(email, passwordHash);
+    // Create user with default name
+    const userDefaultName = email.split('@')[0];
+    const userId = await UserModel.create(email, passwordHash, userDefaultName);
     
     // Generate token
     const token = jwt.sign({ id: userId, email }, JWT_SECRET, { expiresIn: '1d' });
     
-    return { user: { id: userId, email, onboarding_completed: false }, token };
+    return { user: { id: userId, email, name: userDefaultName, onboarding_completed: false }, token };
   }
 
   static async login(email, password) {
@@ -44,6 +45,7 @@ class AuthService {
     const payload = { 
       id: user.id, 
       email: user.email, 
+      name: user.name,
       onboarding_completed: !!user.onboarding_completed,
       planning_model: user.planning_model,
       net_monthly_income: parseFloat(user.net_monthly_income) || 0,

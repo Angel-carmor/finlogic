@@ -231,7 +231,7 @@ const resetToDefault = () => {
 .amount-input:disabled { background: transparent; border-color: transparent; padding-right: 0; color: var(--text-main); }
 .amount-input::-webkit-inner-spin-button, .amount-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 .amount-input[type=number] { -moz-appearance: textfield; appearance: textfield; }
-.currency-symbol { color: var(--text-muted); font-weight: 700; font-family: monospace; font-size: 1.15rem; position: static; }
+.currency-symbol { color: var(--text-muted); font-weight: 700; font-family: monospace; font-size: 1.15rem; position: static; transform: translateY(2px); }
 .neon-text { color: var(--color-success); text-shadow: 0 0 5px rgba(0,200,5,0.3); }
 
 .cyber-slider { -webkit-appearance: none; width: 100%; height: 6px; background: linear-gradient(to right, var(--color-success) var(--val, 0%), var(--bg-base) var(--val, 0%)); border-radius: 3px; outline: none; }
@@ -269,4 +269,22 @@ const resetToDefault = () => {
 .btn-primary:hover { box-shadow: 0 0 15px rgba(59,130,246,0.4); transform: translateY(-1px); background: #2563eb; }
 .btn-secondary { background: transparent; color: var(--text-muted); border: 1px solid var(--border-color); padding: 0.8rem; border-radius: 8px; cursor: pointer; font-family: 'Inter', monospace; font-weight: 600; transition: all 0.3s; }
 .btn-secondary:hover { border-color: var(--text-main); color: var(--text-main); background: var(--border-color); }
+
+@media (max-width: 768px) {
+  .strategy-toggle { width: 100%; overflow-x: auto; justify-content: flex-start; padding: 4px 8px; scrollbar-width: none; }
+  .strategy-toggle::-webkit-scrollbar { display: none; }
+  .toggle-btn { padding: 0.6rem 1.2rem; white-space: nowrap; flex-shrink: 0; }
+  
+  .tracker-grid { grid-template-columns: 1fr; }
+  .fixed-blocks-container { grid-template-columns: 1fr; }
+  
+  .slider-info { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+  .label-wrapper { width: 100%; justify-content: space-between; }
+  .solid-name-input { width: 100%; flex: 1; }
+  .values { align-self: flex-end; }
+  
+  .add-buttons-row { flex-direction: column; }
+  
+  .cyber-slider::-webkit-slider-thumb { width: 22px; height: 22px; } /* Larger touch area */
+}
 </style>
