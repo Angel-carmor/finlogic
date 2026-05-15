@@ -5,7 +5,12 @@ const pool = require('./config/db');
 const app = express();
 
 app.use(cors({
-  origin: ['https://finlogic-l7cqwyck2-angels-projects-525d4ecd.vercel.app', 'http://localhost:3000'],
+  origin: [
+    'https://finlogic-l7cqwyck2-angels-projects-525d4ecd.vercel.app',
+    'https://finlogic-hnjfdt62s-angels-projects-525d4ecd.vercel.app',
+    'http://localhost:3000',
+    'http://localhost:5173'
+  ],
   credentials: true
 }));
 app.use(express.json());
