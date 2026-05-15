@@ -78,4 +78,11 @@ const hoveredSegment = ref(null);
 .dot { width: 12px; height: 12px; border-radius: 50%; }
 .legend-text { font-size: 0.95rem; color: var(--text-main); }
 .pct { font-weight: 800; font-family: monospace; font-size: 1.6rem; text-align: center; }
+
+@media (max-width: 480px) {
+  .large-donut { width: 220px; }
+  .isf-value { font-size: 1.8rem; }
+  .legend { gap: 1rem; }
+  .pct { font-size: 1.2rem; }
+}
 </style>

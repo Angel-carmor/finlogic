@@ -8,8 +8,8 @@
         </router-link>
       </div>
 
-      <!-- CENTER: Main Navigation -->
-      <div class="topbar-center">
+      <!-- CENTER: Main Navigation (Desktop) -->
+      <div class="topbar-center desktop-only">
         <nav class="main-nav">
           <router-link to="/dashboard" class="nav-link">
             <svg class="nav-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
@@ -36,6 +36,13 @@
 
       <!-- RIGHT: Utils & Profile -->
       <div class="topbar-right">
+        <!-- Restart Tour (Desktop only in topbar to save space) -->
+        <div class="util-item desktop-only">
+          <button class="util-btn" @click="restartTour" :title="$t('topbar.restart_tour_tooltip')">
+            <svg class="util-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+          </button>
+        </div>
+
         <!-- Language Selector -->
         <div class="util-item" ref="langContainer">
           <button class="util-btn" @click="isLangOpen = !isLangOpen">
@@ -49,13 +56,6 @@
               </button>
             </div>
           </Transition>
-        </div>
-
-        <!-- Restart Tour -->
-        <div class="util-item">
-          <button class="util-btn" @click="restartTour" :title="$t('topbar.restart_tour_tooltip')">
-            <svg class="util-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
-          </button>
         </div>
 
         <!-- Support -->
@@ -81,7 +81,7 @@
         <div class="profile-item" ref="profileContainer">
           <button class="profile-btn" @click="isProfileOpen = !isProfileOpen">
             <div class="avatar">{{ userInitial }}</div>
-            <span class="user-name">{{ userName }}</span>
+            <span class="user-name desktop-only">{{ userName }}</span>
             <svg class="chevron" :class="{ 'rotate': isProfileOpen }" viewBox="0 0 24 24"><path fill="currentColor" d="M7 10l5 5 5-5H7z"/></svg>
           </button>
           <Transition name="pop">
@@ -101,6 +101,26 @@
       </div>
     </div>
   </header>
+
+  <!-- MOBILE BOTTOM NAV -->
+  <nav class="mobile-nav">
+    <router-link to="/dashboard" class="mob-link">
+      <svg class="mob-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+      <span>{{ $t('sidebar.dashboard_short') || 'Inicio' }}</span>
+    </router-link>
+    <router-link to="/analytics" class="mob-link">
+      <svg class="mob-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+      <span>{{ $t('sidebar.analytics_short') || 'Análisis' }}</span>
+    </router-link>
+    <router-link to="/tracking" class="mob-link">
+      <svg class="mob-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+      <span>{{ $t('sidebar.tracking_short') || 'Meses' }}</span>
+    </router-link>
+    <router-link to="/investments" class="mob-link">
+      <svg class="mob-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+      <span>{{ $t('sidebar.investments_short') || 'Invertir' }}</span>
+    </router-link>
+  </nav>
 </template>
 
 <script setup>
@@ -122,7 +142,11 @@ const langContainer = ref(null);
 const supportContainer = ref(null);
 const profileContainer = ref(null);
 
-const userName = computed(() => authStore.user?.name || 'Angel');
+const userName = computed(() => {
+  const user = authStore.user;
+  if (!user) return 'Usuario';
+  return user.name || user.email?.split('@')[0] || 'Usuario';
+});
 const userInitial = computed(() => userName.value.charAt(0).toUpperCase());
 
 const languages = [
@@ -352,5 +376,55 @@ onUnmounted(() => document.removeEventListener('click', handleClickOutside));
 @media (max-width: 1200px) {
   .nav-link span { display: none; }
   .topbar-center { position: relative; transform: none; left: 0; }
+}
+
+/* MOBILE NAV STYLES */
+.mobile-nav {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 70px;
+  background: rgba(13, 13, 22, 0.9);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 2000;
+  justify-content: space-around;
+  align-items: center;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.mob-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  color: #666;
+  text-decoration: none;
+  font-size: 0.65rem;
+  font-weight: 700;
+  transition: all 0.2s;
+  padding: 0.5rem;
+}
+
+.mob-link.router-link-active {
+  color: var(--color-primary);
+}
+
+.mob-icon { width: 22px; height: 22px; }
+
+@media (max-width: 768px) {
+  .desktop-only { display: none !important; }
+  .mobile-nav { display: flex; }
+  
+  .topbar { height: 70px; }
+  .brand-logo { height: 50px; }
+  
+  .topbar-content { padding: 0 1rem; }
+  .topbar-right { gap: 0.5rem; }
+  
+  .util-btn { width: 36px; height: 36px; border-radius: 10px; }
+  .avatar { width: 32px; height: 32px; font-size: 0.8rem; }
+  
+  .nav-divider { height: 18px; }
 }
 </style>

@@ -122,15 +122,15 @@
                       <div class="edit-mode-grid">
                         <input class="premium-edit-input" type="text" v-model="editDebt.name" />
                         <div class="input-unit">
-                          <input class="premium-edit-input" type="number" v-model.number="editDebt.amount" />
+                          <input class="premium-edit-input" type="number" v-model.number="editDebt.amount" min="0" />
                           <i>€</i>
                         </div>
                         <div class="input-unit">
-                          <input class="premium-edit-input" type="number" v-model.number="editDebt.interest_rate" step="0.1" />
+                          <input class="premium-edit-input" type="number" v-model.number="editDebt.interest_rate" step="0.1" min="0" max="999" />
                           <i>%</i>
                         </div>
                         <div class="input-unit">
-                          <input class="premium-edit-input" type="number" v-model.number="editDebt.monthly_payment" />
+                          <input class="premium-edit-input" type="number" v-model.number="editDebt.monthly_payment" min="0" />
                           <i>€</i>
                         </div>
                         <div class="edit-actions">
@@ -175,7 +175,7 @@
                   <div class="field-group">
                     <label class="field-label">{{ $t('financial_profile.interest_rate') }}</label>
                     <div class="currency-wrap">
-                      <input class="field-input percent-input" type="number" v-model.number="newDebt.interest_rate" min="0" max="100" step="0.1" placeholder="0.0" />
+                      <input class="field-input percent-input" type="number" v-model.number="newDebt.interest_rate" min="0" max="999" step="0.1" placeholder="0.0" />
                       <span class="currency-symbol" style="left:auto;right:0.8rem">%</span>
                     </div>
                   </div>
@@ -252,6 +252,15 @@ const totalFixed = computed(() => (form.housing || 0) + (form.utilities || 0));
 const totalDebt = computed(() => Math.round(debts.value.reduce((s, d) => s + parseFloat(d.amount), 0)));
 const totalMonthlyPayment = computed(() => Math.round(debts.value.reduce((s, d) => s + parseFloat(d.monthly_payment || 0), 0)));
 
+// RADICAL PREVENTION: Watch for negative values and reset them instantly
+import { watch } from 'vue';
+watch(() => form.net_monthly_income, (val) => { if (val < 0) form.net_monthly_income = 0; });
+watch(() => form.extra_income, (val) => { if (val < 0) form.extra_income = 0; });
+watch(() => form.housing, (val) => { if (val < 0) form.housing = 0; });
+watch(() => form.utilities, (val) => { if (val < 0) form.utilities = 0; });
+watch(() => newDebt.interest_rate, (val) => { if (val > 999) newDebt.interest_rate = 999; if (val < 0) newDebt.interest_rate = 0; });
+watch(() => editDebt.interest_rate, (val) => { if (val > 999) editDebt.interest_rate = 999; if (val < 0) editDebt.interest_rate = 0; });
+
 const sortedDebts = computed(() => [...debts.value].sort((a, b) => parseFloat(b.interest_rate) - parseFloat(a.interest_rate)));
 
 const rateClass = (rate) => {
@@ -267,10 +276,10 @@ const saveAll = async () => {
   try {
     await authStore.updateProfile({
       ...user.value,
-      net_monthly_income: form.net_monthly_income,
-      extra_income: form.extra_income,
-      housing: form.housing,
-      utilities: form.utilities,
+      net_monthly_income: Math.max(0, form.net_monthly_income || 0),
+      extra_income: Math.max(0, form.extra_income || 0),
+      housing: Math.max(0, form.housing || 0),
+      utilities: Math.max(0, form.utilities || 0),
     });
     localStorage.removeItem('finlogic_custom_budget_' + user.value.id);
     saveSuccess.value = true;

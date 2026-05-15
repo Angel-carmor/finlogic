@@ -2,8 +2,6 @@ const mysql = require('mysql2/promise');
 
 const isRailway = process.env.MYSQL_PUBLIC_URL || process.env.RAILWAY;
 
-const mysql = require('mysql2/promise');
-
 const pool = mysql.createPool({
       // Prioriza las variables estándar que definiste en Railway, si no, usa localhost
       host: process.env.DB_HOST || 'localhost',

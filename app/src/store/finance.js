@@ -227,11 +227,34 @@ export const useFinanceStore = defineStore('finance', {
       if (model === 'rescate' || model === 'escudo') model = 'contingencia';
       this.currentModelId = model;
     },
+    handleSliderInput(item, newVal) {
+      const sanitizedVal = Math.max(0, parseInt(newVal) || 0);
+      const sumOtherExpenses = this.sumExpenses - item.amount;
+      const maxPossible = this.netIncome - sumOtherExpenses;
+      
+      let finalVal = sanitizedVal;
+      if (finalVal > maxPossible) {
+        finalVal = maxPossible;
+      }
+      
+      item.amount = finalVal;
+    },
     saveToLocal() {
       const authStore = useAuthStore();
       const userId = authStore.user?.id;
+      
+      // Perform cleanup: filter out any unlocked item with amount 0 or less
+      this.budgetItems = this.budgetItems.filter(item => {
+        if (item.locked) return true;
+        return item.amount > 0;
+      });
+
       if (userId) {
         localStorage.setItem('finlogic_custom_budget_' + userId, JSON.stringify(this.budgetItems));
+        console.log('Presupuesto limpiado y guardado para usuario:', userId);
+      } else {
+        // Fallback for guest or temporary session
+        localStorage.setItem('finlogic_custom_budget_guest', JSON.stringify(this.budgetItems));
       }
     },
     resetToDefault() {
@@ -245,29 +268,18 @@ export const useFinanceStore = defineStore('finance', {
       this.currentModelId = 'equilibrio';
       this.saveToLocal();
     },
-    handleSliderInput(item, newVal) {
-      const sumOtherExpenses = this.sumExpenses - item.amount;
-      const maxPossible = this.netIncome - sumOtherExpenses;
-      
-      if (newVal > maxPossible) {
-        newVal = maxPossible;
-      }
-      
-      item.amount = newVal;
-      this.saveToLocal();
-    },
     addNewSlider(type) {
       const isNeed = type === 'necesidad';
       this.budgetItems.push({
         id: 'custom_' + Date.now(),
         name: isNeed ? 'new_need' : 'new_desire',
         locked: false,
-        amount: 0,
+        amount: 1, 
         color: isNeed ? '#3b82f6' : '#fcd34d',
         type: isNeed ? 'necesidad' : 'deseo',
         isCustom: true
       });
-      this.saveToLocal();
+      // No saveToLocal here to let user edit it first
     },
     removeSlider(id) {
       this.budgetItems = this.budgetItems.filter(i => i.id !== id);

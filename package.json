@@ -9,5 +9,9 @@
     "docker:down": "docker-compose -f docker/docker-compose.yml down",
     "backup": "./scripts/db-backup.sh",
     "restore": "bash -c './scripts/db-restore.sh \"$@\"' --"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.4"
   }
 }

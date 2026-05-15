@@ -18,14 +18,16 @@ class DebtController {
       const userId = req.user.id;
       const { name, amount, interest_rate, monthly_payment } = req.body;
       
-      if (!name || amount === undefined || amount < 0) {
+      if (!name || amount === undefined || parseFloat(amount) < 0) {
         return res.status(400).json({ error: 'Name and a positive valid amount are required' });
       }
 
-      const rate = parseFloat(interest_rate) || 0;
-      const payment = parseFloat(monthly_payment) || 0;
-      console.log('DEBUG: Adding debt parameters:', { userId, name, amount, rate, payment });
-      const insertId = await DebtModel.create(userId, name, parseFloat(amount), rate, payment);
+      const rate = Math.max(0, parseFloat(interest_rate) || 0);
+      const payment = Math.max(0, parseFloat(monthly_payment) || 0);
+      const sanitizedAmount = Math.max(0, parseFloat(amount));
+
+      console.log('DEBUG: Adding debt parameters:', { userId, name, amount: sanitizedAmount, rate, payment });
+      const insertId = await DebtModel.create(userId, name, sanitizedAmount, rate, payment);
       const debts = await DebtModel.getAllByUserId(userId);
       const updatedUser = await UserModel.findById(userId);
 
@@ -73,22 +75,23 @@ class DebtController {
 
       console.log('DEBUG: Updating debt:', { id, userId, name, amount, interest_rate, monthly_payment });
 
-      if (!name || amount === undefined || amount < 0) {
+      if (!name || amount === undefined || parseFloat(amount) < 0) {
         return res.status(400).json({ error: 'Name and a valid amount are required' });
       }
+
+      const sanitizedAmount = Math.max(0, parseFloat(amount));
+      const sanitizedRate = Math.max(0, parseFloat(interest_rate) || 0);
+      const sanitizedPayment = Math.max(0, parseFloat(monthly_payment) || 0);
 
       const affected = await DebtModel.update(
         id, 
         userId, 
         name, 
-        parseFloat(amount), 
-        parseFloat(interest_rate) || 0, 
-        parseFloat(monthly_payment) || 0
+        sanitizedAmount, 
+        sanitizedRate, 
+        sanitizedPayment
       );
 
-      // We don't return 404 if 0 rows affected, because it could mean no values changed.
-      // We only return 404 if we are sure the ID doesn't exist (handled by the DB or a check).
-      
       const debts = await DebtModel.getAllByUserId(userId);
       const updatedUser = await UserModel.findById(userId);
 

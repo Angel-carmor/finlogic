@@ -77,7 +77,7 @@
             <div class="slider-info">
               <div class="label-wrapper">
                 <input type="text" :value="item.name.startsWith('new') ? $t('budget.' + item.name) : item.name" @input="item.name = $event.target.value" class="solid-name-input necesidad" />
-                <button class="icon-delete-btn" @click="financeStore.removeSlider(item.id)" title="Eliminar gasto">
+                <button class="icon-delete-btn" @click="triggerDelete(item.id)" title="Eliminar gasto">
                   <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
                 </button>
               </div>
@@ -96,7 +96,7 @@
             <div class="slider-info">
               <div class="label-wrapper">
                 <input type="text" :value="item.name.startsWith('new') ? $t('budget.' + item.name) : item.name" @input="item.name = $event.target.value" class="solid-name-input deseo" />
-                <button class="icon-delete-btn" @click="financeStore.removeSlider(item.id)" title="Eliminar gasto">
+                <button class="icon-delete-btn" @click="triggerDelete(item.id)" title="Eliminar gasto">
                   <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
                 </button>
               </div>
@@ -127,7 +127,7 @@
       </div>
     </div>
 
-    <!-- ── CONFIRMATION MODAL ── -->
+    <!-- ── CONFIRMATION MODAL (SAVE) ── -->
     <ConfirmModal
       :show="showConfirmModal"
       title="Guardar Cambios"
@@ -135,6 +135,17 @@
       icon="💾"
       @confirm="onConfirmSave"
       @cancel="showConfirmModal = false"
+    />
+
+    <!-- ── CONFIRMATION MODAL (DELETE) ── -->
+    <ConfirmModal
+      :show="showDeleteModal"
+      title="Eliminar Gasto"
+      message="¿Estás seguro de que quieres eliminar este elemento de tu presupuesto?"
+      icon="🗑️"
+      confirmText="Eliminar"
+      @confirm="onConfirmDelete"
+      @cancel="showDeleteModal = false"
     />
   </div>
 </template>
@@ -150,6 +161,7 @@ const { t } = useI18n();
 
 const fixedItems = computed(() => financeStore.budgetItems.filter(i => i.locked));
 const variableItems = computed(() => financeStore.budgetItems.filter(i => !i.locked));
+
 const needsItems = computed(() => variableItems.value.filter(i => i.type === 'necesidad'));
 const desiresItems = computed(() => variableItems.value.filter(i => i.type === 'deseo'));
 
@@ -170,7 +182,10 @@ const getModelDesc = (id) => {
   return model ? t('models.' + model.key + '_desc') : '';
 };
 
+// MODALS STATE
 const showConfirmModal = ref(false);
+const showDeleteModal = ref(false);
+const itemToDelete = ref(null);
 
 const saveUpdates = () => {
   showConfirmModal.value = true;
@@ -183,6 +198,19 @@ const onConfirmSave = () => {
 
 const resetToDefault = () => {
   financeStore.resetToDefault();
+};
+
+const triggerDelete = (id) => {
+  itemToDelete.value = id;
+  showDeleteModal.value = true;
+};
+
+const onConfirmDelete = () => {
+  if (itemToDelete.value) {
+    financeStore.removeSlider(itemToDelete.value);
+    itemToDelete.value = null;
+  }
+  showDeleteModal.value = false;
 };
 </script>
 
@@ -231,7 +259,7 @@ const resetToDefault = () => {
 .amount-input:disabled { background: transparent; border-color: transparent; padding-right: 0; color: var(--text-main); }
 .amount-input::-webkit-inner-spin-button, .amount-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 .amount-input[type=number] { -moz-appearance: textfield; appearance: textfield; }
-.currency-symbol { color: var(--text-muted); font-weight: 700; font-family: monospace; font-size: 1.15rem; position: static; }
+.currency-symbol { color: var(--text-muted); font-weight: 700; font-family: monospace; font-size: 1.15rem; position: static; transform: translateY(2px); }
 .neon-text { color: var(--color-success); text-shadow: 0 0 5px rgba(0,200,5,0.3); }
 
 .cyber-slider { -webkit-appearance: none; width: 100%; height: 6px; background: linear-gradient(to right, var(--color-success) var(--val, 0%), var(--bg-base) var(--val, 0%)); border-radius: 3px; outline: none; }
@@ -269,4 +297,22 @@ const resetToDefault = () => {
 .btn-primary:hover { box-shadow: 0 0 15px rgba(59,130,246,0.4); transform: translateY(-1px); background: #2563eb; }
 .btn-secondary { background: transparent; color: var(--text-muted); border: 1px solid var(--border-color); padding: 0.8rem; border-radius: 8px; cursor: pointer; font-family: 'Inter', monospace; font-weight: 600; transition: all 0.3s; }
 .btn-secondary:hover { border-color: var(--text-main); color: var(--text-main); background: var(--border-color); }
+
+@media (max-width: 768px) {
+  .strategy-toggle { width: 100%; overflow-x: auto; justify-content: flex-start; padding: 4px 8px; scrollbar-width: none; }
+  .strategy-toggle::-webkit-scrollbar { display: none; }
+  .toggle-btn { padding: 0.6rem 1.2rem; white-space: nowrap; flex-shrink: 0; }
+  
+  .tracker-grid { grid-template-columns: 1fr; }
+  .fixed-blocks-container { grid-template-columns: 1fr; }
+  
+  .slider-info { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+  .label-wrapper { width: 100%; justify-content: space-between; }
+  .solid-name-input { width: 100%; flex: 1; }
+  .values { align-self: flex-end; }
+  
+  .add-buttons-row { flex-direction: column; }
+  
+  .cyber-slider::-webkit-slider-thumb { width: 22px; height: 22px; } /* Larger touch area */
+}
 </style>

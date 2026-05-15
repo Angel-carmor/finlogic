@@ -6,7 +6,9 @@ CREATE TABLE IF NOT EXISTS users (
   id INT PRIMARY KEY AUTO_INCREMENT,
   email VARCHAR(255) NOT NULL UNIQUE,
   password_hash VARCHAR(255) NOT NULL,
+  name VARCHAR(255) DEFAULT NULL,
   net_monthly_income DECIMAL(10, 2) DEFAULT 0,
+  extra_income DECIMAL(10, 2) DEFAULT 0,
   fixed_loads DECIMAL(10, 2) DEFAULT 0,
   housing DECIMAL(10, 2) DEFAULT 0,
   utilities DECIMAL(10, 2) DEFAULT 0,
@@ -79,8 +81,8 @@ CREATE TABLE IF NOT EXISTS monthly_budget_snapshots (
 
 -- 1. Inserción de Usuario Demo (Email: admin@finlogic.com | Contraseña: SecurityPass123!)
 -- Hash Bcrypt precalculado para SecurityPass123!: $2a$10$bJWlegIDIlfoIzgxu9oXduFsTKNKWQh/ULEEZvdUPWU.xbQNgB4DW
-INSERT INTO users (id, email, password_hash, net_monthly_income, fixed_loads, housing, utilities, total_debt, onboarding_completed, planning_model, debt_strategy)
-VALUES (1, 'admin@finlogic.com', '$2a$10$bJWlegIDIlfoIzgxu9oXduFsTKNKWQh/ULEEZvdUPWU.xbQNgB4DW', 3000.00, 12000.00, 800.00, 200.00, 14500.00, TRUE, '50/30/20', 'avalanche')
+INSERT INTO users (id, email, password_hash, name, net_monthly_income, fixed_loads, housing, utilities, total_debt, onboarding_completed, planning_model, debt_strategy)
+VALUES (1, 'admin@finlogic.com', '$2a$10$bJWlegIDIlfoIzgxu9oXduFsTKNKWQh/ULEEZvdUPWU.xbQNgB4DW', 'Administrador', 3000.00, 12000.00, 800.00, 200.00, 14500.00, TRUE, '50/30/20', 'avalanche')
 ON DUPLICATE KEY UPDATE id=id;
 
 -- 2. Inserción de Deudas Semilla para el Usuario Demo (id: 1)

@@ -38,8 +38,8 @@
   "budget": {
     "title": "CONTROL DE GASTOS",
     "income_ref": "Ingresos Ref.",
-    "add_need": "+ Añadir Necesidad",
-    "add_desire": "+ Añadir Ocio",
+    "add_need": "Añadir Necesidad",
+    "add_desire": "Añadir Ocio",
     "needs": "Necesidades",
     "desires": "Ocio / Deseos",
     "fixed_costs": "Costes Fijos (No modificables aquí)",

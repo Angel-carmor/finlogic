@@ -238,5 +238,9 @@ const financeStore = useFinanceStore();
 .border-danger { border-color: rgba(255, 77, 79, 0.4); border-left: 4px solid var(--color-danger); }
 .border-muted { border-color: var(--border-color); border-left: 4px solid var(--text-muted); }
 
-@media (max-width: 1000px) { .kpi-grid { grid-template-columns: 1fr; } }
+@media (max-width: 1000px) { 
+  .kpi-grid { grid-template-columns: 1fr; gap: 1rem; } 
+  .huge-amount { font-size: 2.2rem; }
+  .panel { padding: 1.2rem; }
+}
 </style>
