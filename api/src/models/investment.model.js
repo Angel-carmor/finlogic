@@ -14,6 +14,14 @@ class InvestmentModel {
     return result.insertId;
   }
 
+  static async updateAmount(id, amount) {
+    const [result] = await db.execute(
+      'UPDATE user_investments SET amount = ? WHERE id = ?',
+      [amount, id]
+    );
+    return result.affectedRows;
+  }
+
   static async delete(id, userId) {
     const [result] = await db.execute('DELETE FROM user_investments WHERE id = ? AND user_id = ?', [id, userId]);
     return result.affectedRows;

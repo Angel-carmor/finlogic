@@ -46,18 +46,36 @@
           <div class="info-tooltip">{{ $t('kpi.balance_tooltip') }}</div>
         </div>
       </div>
-      <div class="balance-content">
-        <div class="vs-bar-container">
-          <div class="vs-bar-fill vs-ahorro" :style="{ width: financeStore.vsAhorroPct + '%' }">
-            <span v-if="financeStore.vsAhorroPct > 15" class="bar-label">{{ $t('kpi.savings_label') }}</span>
+      
+      <div class="balance-container">
+        <div class="vs-labels">
+          <div class="vs-label-group ahorro">
+            <div class="vs-box">
+              <svg class="vs-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+              <span class="vs-pct">{{ Math.round(financeStore.vsAhorroPct) }}%</span>
+            </div>
           </div>
-          <div class="vs-bar-fill vs-ocio" :style="{ width: financeStore.vsOcioPct + '%' }">
-            <span v-if="financeStore.vsOcioPct > 15" class="bar-label">{{ $t('kpi.leisure_label') }}</span>
+          <div class="vs-middle">VS</div>
+          <div class="vs-label-group ocio">
+            <div class="vs-box">
+              <span class="vs-pct">{{ Math.round(financeStore.vsOcioPct) }}%</span>
+              <svg class="vs-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="premium-bar">
+          <div class="bar-segment ahorro" :style="{ width: financeStore.vsAhorroPct + '%' }">
+            <div class="glow"></div>
+          </div>
+          <div class="bar-segment ocio" :style="{ width: financeStore.vsOcioPct + '%' }">
+            <div class="glow"></div>
           </div>
         </div>
         
-        <div class="dynamic-msg" :class="financeStore.balanceStatus.colorClass">
-          {{ $t('store.balance.' + financeStore.balanceStatus.text) }}
+        <div class="dynamic-msg-box" :class="financeStore.balanceStatus.colorClass">
+          <div class="msg-dot" :style="{ background: financeStore.balanceStatus.colorClass }"></div>
+          <p>{{ $t('store.balance.' + financeStore.balanceStatus.text, financeStore.balanceStatus.params) }}</p>
         </div>
       </div>
     </div>
@@ -95,15 +113,119 @@ const financeStore = useFinanceStore();
 .progress-bar { height: 6px; background: var(--bg-base); border-radius: 3px; overflow: hidden; }
 .progress-fill { height: 100%; background: var(--color-success); box-shadow: 0 0 10px var(--color-success); transition: width 0.3s; }
 
-.balance-content { display: flex; flex-direction: column; justify-content: center; height: calc(100% - 2.5rem); gap: 1.5rem; }
+.balance-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
 
-.vs-bar-container { display: flex; height: 32px; border-radius: 16px; overflow: hidden; background: var(--bg-base); box-shadow: inset 0 2px 6px rgba(0,0,0,0.4); }
-.vs-bar-fill { height: 100%; transition: width 0.5s ease-out; display: flex; align-items: center; justify-content: center; }
-.vs-ahorro { background: linear-gradient(90deg, #00C805, #10b981); }
-.vs-ocio { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
-.bar-label { font-size: 0.8rem; font-weight: 800; color: rgba(255,255,255,0.95); letter-spacing: 1px; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+.vs-labels {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 0.5rem;
+}
 
-.dynamic-msg { font-size: 0.9rem; line-height: 1.5; font-weight: 500; text-align: center; }
+.vs-label-group {
+  display: flex;
+  align-items: center;
+}
+
+.vs-box {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 0.8rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+}
+
+.vs-icon {
+  width: 20px;
+  height: 20px;
+  opacity: 0.8;
+}
+
+.ahorro .vs-icon, .ahorro .vs-pct { color: var(--color-success); }
+.ocio .vs-icon, .ocio .vs-pct { color: #f59e0b; }
+
+.vs-pct {
+  font-size: 1.2rem;
+  font-weight: 800;
+  font-family: monospace;
+  line-height: 1;
+  transform: translateY(3px);
+}
+
+.vs-middle {
+  font-size: 0.7rem;
+  font-weight: 900;
+  color: var(--text-muted);
+  background: rgba(255,255,255,0.05);
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  letter-spacing: 1px;
+}
+
+.premium-bar {
+  display: flex;
+  height: 12px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.bar-segment {
+  height: 100%;
+  position: relative;
+  transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.bar-segment.ahorro {
+  background: linear-gradient(90deg, #00C805, #10b981);
+}
+
+.bar-segment.ocio {
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+}
+
+.glow {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  filter: blur(10px);
+  opacity: 0.4;
+  background: inherit;
+}
+
+.dynamic-msg-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  padding: 1rem;
+  background: rgba(255,255,255,0.02);
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.msg-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-top: 0.4rem;
+  flex-shrink: 0;
+  box-shadow: 0 0 10px currentColor;
+}
+
+.dynamic-msg-box p {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-main);
+  text-align: left;
+}
 .text-success { color: var(--color-success) !important; }
 .text-primary { color: var(--color-primary) !important; }
 .text-warning { color: #f59e0b !important; }

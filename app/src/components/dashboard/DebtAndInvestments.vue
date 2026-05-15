@@ -2,7 +2,12 @@
   <div class="debt-investments-container" id="tour-debt">
     <div class="panel list-panel">
       <h3 class="section-title">
-        <span class="dot red-dot"></span> {{ $t('debts_investments.debts') }}
+        <div class="title-left">
+          <span class="dot red-dot"></span> {{ $t('debts_investments.debts') }}
+        </div>
+        <router-link to="/financial-profile" class="manage-link" title="Gestionar Deuda">
+          <svg viewBox="0 0 24 24" class="m-icon"><path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+        </router-link>
       </h3>
       <div v-if="loadingDebts" class="loading-msg">{{ $t('debts_investments.loading_debts') }}</div>
       <div v-else-if="debts.length === 0" class="empty-msg">{{ $t('debts_investments.no_debts') }}</div>
@@ -21,7 +26,12 @@
 
     <div class="panel list-panel">
       <h3 class="section-title">
-        <span class="dot green-dot"></span> {{ $t('debts_investments.investments') }}
+        <div class="title-left">
+          <span class="dot green-dot"></span> {{ $t('debts_investments.investments') }}
+        </div>
+        <router-link to="/investments" class="manage-link" title="Ir a Inversiones">
+          <svg viewBox="0 0 24 24" class="m-icon"><path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+        </router-link>
       </h3>
       <div v-if="loadingInvestments" class="loading-msg">{{ $t('debts_investments.loading_investments') }}</div>
       <div v-else-if="investments.length === 0" class="empty-msg">{{ $t('debts_investments.no_investments') }}</div>
@@ -107,6 +117,7 @@ onMounted(() => {
 }
 .section-title {
   display: flex;
+  justify-content: space-between;
   align-items: center;
   gap: 0.6rem;
   margin: 0 0 1.5rem 0;
@@ -115,6 +126,18 @@ onMounted(() => {
   font-weight: 700;
   letter-spacing: 1px;
 }
+.title-left { display: flex; align-items: center; gap: 0.6rem; }
+.manage-link {
+  color: var(--text-muted);
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+}
+.manage-link:hover {
+  color: var(--color-primary);
+  transform: scale(1.1);
+}
+.m-icon { width: 18px; height: 18px; }
 .dot {
   display: inline-block;
   width: 12px;

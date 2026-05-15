@@ -32,6 +32,21 @@ class DebtModel {
 
     return result.affectedRows;
   }
+
+  static async update(id, userId, name, amount, interestRate, monthlyPayment) {
+    const [result] = await db.execute(
+      'UPDATE user_debts SET name = ?, amount = ?, interest_rate = ?, monthly_payment = ? WHERE id = ? AND user_id = ?',
+      [name, amount, interestRate, monthlyPayment, id, userId]
+    );
+
+    // Update global total_debt automatically
+    await db.execute(
+       'UPDATE users SET total_debt = (SELECT COALESCE(SUM(amount), 0) FROM user_debts WHERE user_id = ?) WHERE id = ?',
+       [userId, userId]
+    );
+
+    return result.affectedRows;
+  }
 }
 
 module.exports = DebtModel;

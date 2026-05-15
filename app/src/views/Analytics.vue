@@ -1,16 +1,15 @@
 <template>
   <div class="dashboard-layout">
-    <Sidebar />
     <main class="main-content">
-      <TourGuide page="analytics" />
+      <TourGuide page="analytics" storageName="tour_seen_analytics" />
       <Topbar />
 
       <div class="dashboard-container">
         <div class="previsions-section">
 
           <!-- Header -->
-          <div class="section-header" id="tour-analytics-header">
-            <h2>{{ $t('analytics.title') }}</h2>
+          <div class="unified-header" id="tour-analytics-header">
+            <h2 class="title">{{ $t('analytics.title') }}</h2>
             <p class="subtitle">{{ $t('analytics.subtitle') }}</p>
           </div>
 
@@ -28,38 +27,34 @@
               </div>
               <p class="panel-subtitle" style="display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 0.5rem;">
                 <span>{{ $t('analytics.savings_capacity') }}: <b class="highlight-green">{{ ahorroMonthly }}€</b> · {{ $t('analytics.total_debt') }}: <b class="highlight-red">{{ totalDebtComputed }}€</b></span>
-                <span style="font-size: 0.75rem; color: #7a7a9c;">*Asigna qué porcentaje de tu capacidad de ahorro destinarás a pagar las deudas.</span>
+                <span style="font-size: 0.75rem; color: #7a7a9c;">*La proyección utiliza las cuotas mensuales configuradas en tu Perfil Financiero.</span>
               </p>
               <div class="chart-controls" id="tour-analytics-controls">
-                <div class="control-col slider-col">
+                <div class="control-col slider-col" id="tour-analytics-fee">
                   <div class="control-labels" style="margin-bottom: 0.5rem;">
-                    <span>{{ $t('analytics.debt_allocation') }}</span>
+                    <span>{{ $t('analytics.monthly_fee_total') }}</span>
                   </div>
                   <div style="display: flex; align-items: center; gap: 0.8rem;">
-                    <div style="display: flex; align-items: center; background: var(--border-color); border-radius: 6px; border: 1px solid var(--border-color); padding-right: 0.5rem;">
-                      <input type="number" min="0" max="100" v-model.number="debtAllocation" class="months-select" style="width: 70px; text-align: right; font-weight: 700; color: #FF6B6B; border: none; background: transparent; font-size: 1.1rem; padding: 0.35rem 0.2rem 0.35rem 0.5rem;" />
-                      <span style="color: #FF6B6B; font-weight: 700; font-size: 1.1rem;">%</span>
+                    <div style="display: flex; align-items: center; background: rgba(255, 107, 107, 0.1); border-radius: 6px; border: 1px solid rgba(255, 107, 107, 0.2); padding: 0.5rem 1rem;">
+                      <span style="color: #FF6B6B; font-weight: 800; font-size: 1.3rem;">{{ financeStore.totalMonthlyDebtPayments }}€</span>
+                      <span style="color: #FF6B6B; font-weight: 700; font-size: 0.9rem; margin-left: 0.3rem;">/ mes</span>
                     </div>
-                    <span style="color: #9E9E9E; font-size: 0.85rem; font-family: monospace;">( {{ Math.round(ahorroMonthly * (debtAllocation / 100)) }}€/mes )</span>
-                    <button @click="saveAllocation" class="btn-action" style="margin-left: 0.5rem; padding: 0.4rem 0.8rem; background: var(--color-primary); color: white; border: none;">{{ $t('analytics.save_changes') }}</button>
-                    <span v-if="showSavedMsg" style="color: var(--color-success); font-size: 0.85rem; font-family: monospace; font-weight: 700; margin-left: 0.5rem; animation: fadeInOut 2s ease forwards;">{{ $t('analytics.saved_success') }}</span>
+                    <router-link to="/financial-profile" class="btn-action" style="text-decoration: none; display: flex; align-items: center; gap: 0.4rem;">
+                      <svg viewBox="0 0 24 24" style="width: 14px; height: 14px;"><path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                      {{ $t('analytics.btn_adjust') }}
+                    </router-link>
                   </div>
                 </div>
-                <div class="control-col date-col">
-                  <div class="control-labels">
-                    <span>
-                      <svg viewBox="0 0 24 24" class="icon" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;color:#9E9E9E;"><path fill="currentColor" d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 002 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>
-                      {{ $t('analytics.chart_period') }}
-                    </span>
-                  </div>
-                  <div style="display:flex; gap:0.5rem; align-items:center;">
-                    <input type="month" v-model="projectionStart" class="months-select" style="width:160px;" />
-                    <span style="color:#9E9E9E;font-weight:bold;">-</span>
-                    <input type="month" v-model="projectionEnd" class="months-select" style="width:160px;" />
-                  </div>
+                <div class="control-col period-col" id="tour-analytics-period">
+                  <BaseSelect 
+                    v-model="selectedPeriod"
+                    :options="periodOptions"
+                    :label="$t('analytics.chart_period')"
+                    icon='<svg viewBox="0 0 24 24"><path fill="currentColor" d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 002 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>'
+                  />
                 </div>
               </div>
-              <div class="scissors-chart">
+              <div class="scissors-chart" id="tour-analytics-chart">
                 <VueApexCharts v-if="chartReady" type="line" height="100%" width="100%" :options="chartOptions" :series="chartSeries" />
                 <div v-else class="chart-empty">
                   <svg viewBox="0 0 24 24" class="empty-icon"><path fill="currentColor" d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
@@ -113,65 +108,63 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '../store/auth';
-import api from '../services/api';
-import Sidebar from '../components/layout/Sidebar.vue';
+import { useFinanceStore } from '../store/finance';
 import Topbar from '../components/layout/Topbar.vue';
 import VueApexCharts from 'vue3-apexcharts';
 import TourGuide from '../components/TourGuide.vue';
+import BaseSelect from '../components/common/BaseSelect.vue';
+import api from '../services/api';
 
+const financeStore = useFinanceStore();
 const authStore = useAuthStore();
 const { t } = useI18n();
-const user = authStore.user || {};
-const token = authStore.token;
 
-const netIncome = parseFloat(user.net_monthly_income) || 2000;
-
-// Debt state (read-only for charts)
-const debts = ref([]);
-const loadingDebt = ref(false);
+const user = computed(() => authStore.user || {});
+const debts = computed(() => financeStore.debts);
+const netMonthly = computed(() => financeStore.netIncome);
+const totalDebtComputed = computed(() => financeStore.totalDebtComputed);
+const ahorroMonthly = computed(() => financeStore.ahorroAmount);
 
 // Chart state
 const chartSeries = ref([]);
 const chartReady = ref(false);
-const ahorroMonthly = ref(0);
 const milestones = ref([]);
+const completedMilestoneIds = ref(new Set());
 
-const savedAllocation = localStorage.getItem('finlogic_debt_allocation_' + user.id);
-const debtAllocation = ref(savedAllocation ? parseInt(savedAllocation, 10) : 50);
-const showSavedMsg = ref(false);
+const currentSavings = ref(0);
 
-const saveAllocation = () => {
-  localStorage.setItem('finlogic_debt_allocation_' + user.id, debtAllocation.value);
-  showSavedMsg.value = true;
-  setTimeout(() => {
-    showSavedMsg.value = false;
-  }, 2000);
-};
-
-const sumExpenses = ref(0);
-const currentSavings = ref(parseFloat(localStorage.getItem('finlogic_current_savings_' + user.id)) || 0);
-
-const completedMilestoneIds = ref(new Set(JSON.parse(localStorage.getItem('finlogic_completed_milestones_' + user.id) || '[]')));
+// Watch for user ready to init data
+watch(() => user.value.id, (newId) => {
+  if (newId) {
+    financeStore.initBudget();
+    fetchDebts();
+    currentSavings.value = parseFloat(localStorage.getItem('finlogic_current_savings_' + newId)) || 0;
+    completedMilestoneIds.value = new Set(JSON.parse(localStorage.getItem('finlogic_completed_milestones_' + newId) || '[]'));
+  }
+}, { immediate: true });
 
 const markCompleted = (id) => {
   completedMilestoneIds.value.add(id);
-  localStorage.setItem('finlogic_completed_milestones_' + user.id, JSON.stringify([...completedMilestoneIds.value]));
+  if (user.value.id) {
+    localStorage.setItem('finlogic_completed_milestones_' + user.value.id, JSON.stringify([...completedMilestoneIds.value]));
+  }
   const m = milestones.value.find(x => x.id === id);
   if (m) m.status = 'completed';
 };
 
-const targetSavings = computed(() => sumExpenses.value * 3);
 const cushionMonths = computed(() => {
-  if (sumExpenses.value <= 0) return 0;
-  return (currentSavings.value / sumExpenses.value).toFixed(1);
+  const expenses = financeStore.sumExpenses || 1;
+  return (currentSavings.value / expenses).toFixed(1);
 });
 
 watch(currentSavings, (val) => {
-  localStorage.setItem('finlogic_current_savings_' + user.id, val);
-  recalcChart();
+  if (user.value.id) {
+    localStorage.setItem('finlogic_current_savings_' + user.value.id, val);
+    recalcChart();
+  }
 });
 
 const currentD = new Date();
@@ -184,11 +177,28 @@ futureD.setFullYear(startYr + 3);
 const futureMo = String(futureD.getMonth() + 1).padStart(2, '0');
 const projectionEnd = ref(`${futureD.getFullYear()}-${futureMo}`);
 
-watch([debtAllocation, projectionStart, projectionEnd], () => recalcChart());
+const selectedPeriod = ref(36);
+const periodOptions = [
+  { label: '1 Año', value: 12 },
+  { label: '2 Años', value: 24 },
+  { label: '3 Años', value: 36 },
+  { label: '5 Años', value: 60 },
+  { label: '10 Años', value: 120 }
+];
 
-const totalDebtComputed = computed(() => {
-  return Math.round(debts.value.reduce((sum, d) => sum + parseFloat(d.amount), 0));
-});
+const calculateEndDate = (months) => {
+  const d = new Date(projectionStart.value + '-01'); // Ensure date parsing works
+  d.setMonth(d.getMonth() + months);
+  const yr = d.getFullYear();
+  const mo = String(d.getMonth() + 1).padStart(2, '0');
+  return `${yr}-${mo}`;
+};
+
+watch(selectedPeriod, (val) => {
+  projectionEnd.value = calculateEndDate(val);
+}, { immediate: true });
+
+watch([projectionStart, projectionEnd, () => financeStore.totalMonthlyDebtPayments, () => financeStore.ahorroAmount], () => recalcChart());
 
 const chartOptions = ref({
   chart: {
@@ -253,41 +263,70 @@ function recalcChart() {
     return d.toLocaleString('es-ES', { month: 'long', year: 'numeric' }).toUpperCase();
   };
 
-  const total = totalDebtComputed.value;
-  if (total <= 0) {
+  const total = financeStore.totalDebtComputed || 0;
+  console.log('Recalculating chart - Total Debt:', total);
+  console.log('Recalculating chart - Monthly Debt Payment:', financeStore.totalMonthlyDebtPayments);
+  
+  if (total <= 0 && financeStore.debts.length === 0) {
     chartReady.value = false;
     milestones.value = [{ id: 1, dateStr: getMilestoneDate(2), title: t('analytics.milestone_1'), status: 'completed', icon: 'check' }];
     return;
   }
 
-  const monthlyDebtPayment = ahorroMonthly.value * (debtAllocation.value / 100);
+  const monthlyDebtPayment = financeStore.totalMonthlyDebtPayments || 0;
   const monthlySavings = Math.max(0, ahorroMonthly.value - monthlyDebtPayment);
 
   const labels = [];
   const deudaData = [];
   const ahorroData = [];
-  let debtRemaining = total;
+
+  // Deep copy of debts to simulate over time
+  let currentDebts = financeStore.debts.map(d => ({
+    amount: parseFloat(d.amount),
+    monthlyRate: (parseFloat(d.interest_rate) || 0) / 100 / 12,
+    payment: parseFloat(d.monthly_payment || 0)
+  }));
+
   let accumulatedSavings = currentSavings.value || 0;
   let crossingMonth = null;
-  if (MONTHS < 1) MONTHS = 1;
-  if (MONTHS > 360) MONTHS = 360;
 
   const formatMonth = (date) => {
     return date.toLocaleString('es-ES', { month: 'short', year: 'numeric' });
   };
 
+  // Initial State (Month 0)
   labels.push(formatMonth(dStart));
-  deudaData.push(Math.round(debtRemaining));
+  deudaData.push(Math.round(currentDebts.reduce((s, d) => s + d.amount, 0)));
   ahorroData.push(Math.round(accumulatedSavings));
 
   for (let m = 1; m <= MONTHS; m++) {
     const currentM = new Date(dStart.getFullYear(), dStart.getMonth() + m, 1);
     labels.push(formatMonth(currentM));
-    debtRemaining = Math.max(0, debtRemaining - monthlyDebtPayment);
-    accumulatedSavings += (debtRemaining === 0 ? ahorroMonthly.value : monthlySavings);
-    deudaData.push(Math.round(debtRemaining));
+
+    let totalRemainingDebt = 0;
+    let totalPaymentsThisMonth = 0;
+
+    currentDebts.forEach(debt => {
+      if (debt.amount > 0) {
+        const interestThisMonth = debt.amount * debt.monthlyRate;
+        const reduction = Math.min(debt.amount, Math.max(0, debt.payment - interestThisMonth));
+        debt.amount = Math.max(0, debt.amount - reduction);
+        totalPaymentsThisMonth += debt.payment;
+      }
+      totalRemainingDebt += debt.amount;
+    });
+
+    // Savings capacity increases when debts are paid off
+    // If debt is 0, the full capacity (ahorroMonthly) is saved. 
+    // If there is still debt, we save (ahorroMonthly - totalPayments)
+    const effectiveMonthlySavings = Math.max(0, ahorroMonthly.value - totalPaymentsThisMonth);
+    
+    accumulatedSavings += effectiveMonthlySavings;
+    
+    deudaData.push(Math.round(totalRemainingDebt));
     ahorroData.push(Math.round(accumulatedSavings));
-    if (crossingMonth === null && accumulatedSavings >= debtRemaining) crossingMonth = m;
+
+    if (crossingMonth === null && accumulatedSavings >= totalRemainingDebt) crossingMonth = m;
   }
 
   chartSeries.value = [
@@ -334,6 +373,7 @@ async function fetchDebts() {
   try {
     const { data } = await api.get('/debts');
     debts.value = data.debts || [];
+    financeStore.setDebts(debts.value);
   } catch (e) {
     console.error('Error fetching debts', e);
   }
@@ -342,27 +382,16 @@ async function fetchDebts() {
 
 
 onMounted(async () => {
-  // Calculate savings
-  const savedBudget = localStorage.getItem('finlogic_custom_budget_' + user.id);
-  let expenses = 0;
-  if (savedBudget) {
-    const items = JSON.parse(savedBudget);
-    expenses = items.reduce((acc, i) => acc + i.amount, 0);
-  } else {
-    expenses = (parseFloat(user.housing) || 600) + (parseFloat(user.utilities) || 150) + 350 + 150 + 200;
-  }
-  sumExpenses.value = expenses;
-  ahorroMonthly.value = Math.max(0, netIncome - expenses);
-
+  financeStore.initBudget();
   await fetchDebts();
   recalcChart();
 });
 </script>
 
 <style scoped>
-.dashboard-layout { display: flex; height: 100vh; background-color: var(--bg-base); font-family: 'Inter', sans-serif; color: var(--text-main); }
-.main-content { flex: 1; padding: 2rem; overflow-y: auto; background: var(--bg-base); }
-.dashboard-container { max-width: 1300px; margin: 0 auto; display: flex; flex-direction: column; gap: 2rem; }
+.dashboard-layout { min-height: 100vh; font-family: 'Inter', sans-serif; color: var(--text-main); }
+.main-content { padding-top: 140px; padding-bottom: 4rem; width: 100%; }
+.dashboard-container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; display: flex; flex-direction: column; gap: 2rem; }
 
 .panel { background: var(--bg-panel); border-radius: 12px; padding: 1.5rem 2rem; border: 1px solid var(--border-color); box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
 .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
@@ -412,7 +441,8 @@ onMounted(async () => {
 .date-col { width: 350px; }
 .control-labels { display: flex; justify-content: space-between; font-size: 0.8rem; font-family: monospace; color: var(--text-muted); }
 .allocation-slider { width: 100%; accent-color: var(--color-danger); cursor: pointer; margin-top: 5px; }
-.months-select { background: var(--border-color); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.35rem 0.5rem; color: var(--text-main); font-family: 'Inter', sans-serif; font-size: 0.85rem; outline: none; cursor: pointer; }
+.months-select { background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.6rem 0.8rem; color: var(--text-main); font-family: 'Inter', sans-serif; font-size: 0.85rem; outline: none; cursor: pointer; transition: border-color 0.2s; box-sizing: border-box; }
+.months-select:focus { border-color: var(--color-primary); }
 
 /* Debt panel */
 .debt-panel { display: flex; flex-direction: column; gap: 0; }
@@ -468,8 +498,10 @@ onMounted(async () => {
 .btn-action { background: var(--border-color); border: 1px dashed var(--text-muted); color: var(--text-main); padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-family: monospace; transition: all 0.2s; }
 .btn-action:hover { border-color: #fcd34d; color: #fcd34d; background: rgba(252, 211, 77, 0.05); }
 
-@media (max-width: 900px) {
-  .top-row { grid-template-columns: 1fr; }
+@media (max-width: 1000px) {
+  .top-blocks { grid-template-columns: 1fr; }
+  .chart-controls { flex-direction: column; }
+  .date-col { width: 100%; }
 }
 
 @keyframes fadeInOut {

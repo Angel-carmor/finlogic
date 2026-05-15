@@ -143,10 +143,10 @@ const profile = reactive({
 const recommendedModel = ref(null);
 
 const availableModels = [
-  { id: 'salvavidas', name: 'Salvavidas', desc: 'Prioridad absoluta a eliminar intereses.', dist: { expenses: '70%', debt: '25%', savings: '5%' } },
-  { id: 'equilibrio', name: 'Equilibrio', desc: 'Regla 50/30/20 para finanzas estables.', dist: { expenses: '50%', leisure: '30%', savings: '20%' } },
-  { id: 'acelerador', name: 'Acelerador', desc: 'Enfocado a inversión y crecimiento masivo.', dist: { expenses: '40%', leisure: '10%', savings: '50%' } },
-  { id: 'escudo', name: 'Escudo', desc: 'Construye tu fondo de emergencia rápidamente.', dist: { expenses: '50%', leisure: '20%', savings: '30%' } }
+  { id: 'acelerador', name: 'Acelerador', desc: '(35/10/55) Máxima optimización para inversión y crecimiento.', dist: { expenses: '35%', leisure: '10%', savings: '55%' } },
+  { id: 'equilibrio', name: 'Equilibrio', desc: '(50/30/20) Estructura 50/30/20 para estabilidad a largo plazo.', dist: { expenses: '50%', leisure: '30%', savings: '20%' } },
+  { id: 'salvavidas', name: 'Salvavidas', desc: '(65/5/30) Enfoque en saneamiento y reducción de deuda.', dist: { expenses: '65%', leisure: '5%', savings: '30%' } },
+  { id: 'contingencia', name: 'Contingencia', desc: '(85/0/15) Prioridad en cubrir necesidades y fondo de reserva.', dist: { expenses: '85%', leisure: '0%', savings: '15%' } }
 ];
 
 const progressWidth = computed(() => {
@@ -166,9 +166,9 @@ const calculateRecommendation = () => {
   const ratio = loads / income;
 
   if (ratio > 0.5) {
-    recommendedModel.value = 'salvavidas';
+    recommendedModel.value = 'contingencia';
   } else if (!profile.has_emergency_fund) {
-    recommendedModel.value = 'escudo';
+    recommendedModel.value = 'salvavidas';
   } else if (ratio < 0.2 && profile.stable_job && profile.has_emergency_fund) {
     recommendedModel.value = 'acelerador';
   } else {
@@ -211,7 +211,6 @@ const submitProfile = async () => {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: radial-gradient(circle at bottom right, #1A1A2E, #1a233b);
   font-family: 'Inter', sans-serif;
   color: #f1f5f9;
 }

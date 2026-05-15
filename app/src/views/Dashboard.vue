@@ -1,9 +1,7 @@
 <template>
   <div class="dashboard-layout">
-    <Sidebar />
-    
     <main class="main-content">
-      <TourGuide page="dashboard" />
+      <TourGuide page="dashboard" storageName="tour_seen_dashboard" />
       <Topbar />
 
       <div class="dashboard-container">
@@ -34,7 +32,6 @@
 <script setup>
 import { onMounted } from 'vue';
 import { useFinanceStore } from '../store/finance';
-import Sidebar from '../components/layout/Sidebar.vue';
 import Topbar from '../components/layout/Topbar.vue';
 import KpiCards from '../components/dashboard/KpiCards.vue';
 import BudgetLevers from '../components/dashboard/BudgetLevers.vue';
@@ -51,11 +48,11 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.dashboard-layout { display: flex; height: 100vh; background-color: var(--bg-base); font-family: 'Inter', monospace; color: var(--text-main); }
-.main-content { flex: 1; padding: 2rem; overflow-y: auto; background: var(--bg-base); }
-.dashboard-container { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 2rem; }
-.analysis-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; }
-.col-left, .col-right { display: flex; flex-direction: column; gap: 2rem; }
+.dashboard-layout { min-height: 100vh; font-family: 'Inter', monospace; color: var(--text-main); }
+.main-content { padding-top: 140px; padding-bottom: 4rem; width: 100%; }
+.dashboard-container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; display: flex; flex-direction: column; gap: 2.5rem; }
+.analysis-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 2.5rem; align-items: start; }
+.col-left, .col-right { display: flex; flex-direction: column; gap: 2.5rem; }
 
 @media (max-width: 1000px) { 
   .analysis-grid { grid-template-columns: 1fr; } 

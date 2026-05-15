@@ -1,8 +1,10 @@
 <template>
   <div class="panel mirror-panel" id="tour-chart">
     <h3 class="with-icon">
-      <svg viewBox="0 0 24 24" class="icon"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
-      {{ $t('mirror.title') }}
+      <div class="title-left">
+        <svg viewBox="0 0 24 24" class="icon"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+        {{ $t('mirror.title') }}
+      </div>
     </h3>
     
     <div class="mirror-content">
@@ -56,7 +58,9 @@ const hoveredSegment = ref(null);
 
 <style scoped>
 .panel { background: var(--bg-panel); border-radius: 12px; padding: 1.5rem; border: 1px solid var(--border-color); box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
-.with-icon { display: flex; align-items: center; gap: 0.5rem; margin: 0 0 1.5rem 0; font-size: 0.8rem; color: var(--text-muted); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+.with-icon { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin: 0 0 1.5rem 0; font-size: 0.8rem; color: var(--text-muted); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+.title-left { display: flex; align-items: center; gap: 0.5rem; }
+.with-icon .icon { width: 16px; height: 16px; color: var(--color-primary); }
 .with-icon .icon { width: 16px; height: 16px; color: var(--color-primary); }
 
 .mirror-content { display: flex; flex-direction: column; align-items: center; gap: 2rem; padding: 1rem 0; height: calc(100% - 2rem); justify-content: center; }

@@ -64,16 +64,33 @@ class InvestmentController {
         return res.status(400).json({ error: 'Name and a valid amount are required' });
       }
 
+      const addedAmount = parseFloat(amount);
       const rate = parseFloat(annual_return) || 0;
       const contribution = parseFloat(monthly_contribution) || 0;
-      const insertId = await InvestmentModel.create(userId, name, ticker || null, parseFloat(amount), rate, contribution);
-      // Not fetching market data here to keep it fast, client will re-fetch list if needed.
-      const investments = await InvestmentModel.getAllByUserId(userId);
 
+      // 1. Verificar si ya existe este ticker para el usuario
+      if (ticker) {
+        const investments = await InvestmentModel.getAllByUserId(userId);
+        const existing = investments.find(inv => inv.ticker && inv.ticker.toUpperCase() === ticker.toUpperCase());
+        
+        if (existing) {
+          // Actualizar monto acumulado
+          const newAmount = parseFloat(existing.amount) + addedAmount;
+          await InvestmentModel.updateAmount(existing.id, newAmount);
+          
+          return res.status(200).json({ 
+            message: 'Position updated and accumulated',
+            investmentId: existing.id
+          });
+        }
+      }
+
+      // 2. Si no existe o no hay ticker, crear nuevo
+      const insertId = await InvestmentModel.create(userId, name, ticker || null, addedAmount, rate, contribution);
+      
       return res.status(201).json({ 
         message: 'Investment added successfully',
-        investmentId: insertId,
-        investments
+        investmentId: insertId
       });
     } catch (error) {
       console.error('Error adding investment:', error);
@@ -100,6 +117,34 @@ class InvestmentController {
     } catch (error) {
       console.error('Error removing investment:', error);
       return res.status(500).json({ error: 'Internal server error while removing investment' });
+    }
+  }
+
+  static async getNews(req, res) {
+    try {
+      const userId = req.user.id;
+      const investments = await InvestmentModel.getAllByUserId(userId);
+      
+      // Construir query basada en los tickers del usuario
+      let query = "Mercado Financiero";
+      if (investments.length > 0) {
+        query = investments.slice(0, 3).map(inv => inv.ticker).join(' ');
+      }
+
+      const searchResult = await yahooFinance.search(query, { newsCount: 5 });
+      const news = (searchResult.news || []).map(item => ({
+        uuid: item.uuid,
+        title: item.title,
+        publisher: item.publisher,
+        link: item.link,
+        providerPublishTime: item.providerPublishTime,
+        type: item.type
+      }));
+
+      return res.status(200).json({ news });
+    } catch (error) {
+      console.error('Error fetching news:', error);
+      return res.status(500).json({ error: 'Error fetching financial news' });
     }
   }
 }
